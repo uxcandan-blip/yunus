@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persona Test Aracı</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0f0f0f;
+  --ink-soft: #6b6b6b;
+  --ink-ghost: #c4c4c0;
+  --surface: #ffffff;
+  --surface-2: #f7f7f5;
+  --surface-3: #efefec;
+  --border: #e8e8e4;
+  --border-strong: #c8c8c4;
+  --accent: #0f0f0f;
+  --accent-green: #16a34a;
+  --accent-green-bg: #f0fdf4;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', -apple-system, sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+/* Header */
+.app-header { margin-bottom: 3rem; }
+.app-logo { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.app-logo-mark {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+}
+.app-logo-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.subtitle {
+  font-size: 15px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  margin-bottom: 0;
+  line-height: 1.5;
+}
+
+/* Mode tabs */
+.mode-tabs {
+  display: flex;
+  background: var(--surface-3);
+  border-radius: 14px;
+  padding: 5px;
+  gap: 4px;
+  margin-bottom: 2.5rem;
+  width: fit-content;
+}
+.mode-tab {
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  transition: all 0.18s ease;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+.mode-tab:hover { color: var(--ink); }
+.mode-tab.active {
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+.section-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-ghost);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 14px;
+}
+
+/* Persona grid */
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.persona-card {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.persona-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.18s;
+  background: linear-gradient(135deg, transparent 60%, rgba(0,0,0,0.02));
+}
+.persona-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.persona-card:hover::before { opacity: 1; }
+
+.persona-card.active-single {
+  border: 2px solid var(--ink);
+  background: var(--ink);
+}
+.persona-card.active-single .persona-name { color: #fff; }
+.persona-card.active-single .persona-role { color: rgba(255,255,255,0.55); }
+
+.persona-card.active-multi {
+  border: 2px solid var(--ink);
+  background: var(--surface-2);
+}
+.persona-card.active-multi::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 10px;
+  line-height: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.persona-card.add-card {
+  border-style: dashed;
+  border-color: var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  color: var(--ink-ghost);
+  gap: 8px;
+  background: var(--surface-2);
+}
+.persona-card.add-card:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--surface);
+  transform: translateY(-1px);
+}
+
+.persona-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.persona-card.active-single .persona-icon { background: rgba(255,255,255,0.12) !important; }
+
+.persona-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.persona-role {
+  font-size: 11px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+  font-weight: 300;
+}
+
+.card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+  gap: 4px;
+}
+.persona-card:hover .card-actions { display: flex; }
+.persona-card.active-single .card-actions { display: flex; }
+
+.card-action-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.card-action-btn:hover { background: #fff; color: var(--ink); border-color: var(--border-strong); }
+.card-action-btn.del:hover { background: #fff5f5; color: #dc2626; border-color: #fca5a5; }
+
+.select-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+.select-all-btn {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: none;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 20px;
+  padding: 5px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.select-all-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.selected-count { font-size: 12px; color: var(--ink-soft); font-weight: 300; }
+
+/* Step cards */
+.step {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+.step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.step-badge {
+  font-size: 11px;
+  background: var(--accent-green-bg);
+  color: var(--accent-green);
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+/* Upload */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: var(--surface-2);
+}
+.upload-zone:hover {
+  border-color: var(--ink);
+  background: var(--surface);
+}
+.upload-zone.has-files {
+  border-style: solid;
+  border-color: var(--accent-green);
+  background: var(--accent-green-bg);
+}
+.upload-text { font-size: 13px; color: var(--ink-soft); font-weight: 300; }
+.upload-text strong { color: var(--ink); font-weight: 600; }
+.upload-zone.has-files .upload-text strong { color: var(--accent-green); }
+
+.flow-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.flow-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+.flow-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.flow-thumb { width: 48px; height: 34px; object-fit: cover; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--border); }
+.flow-label-input {
+  flex: 1;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--ink);
+  font-weight: 400;
+}
+.flow-label-input:focus { border-color: var(--ink); }
+.flow-actions { display: flex; gap: 4px; }
+.fab {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 7px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.12s;
+}
+.fab:hover { border-color: var(--border-strong); color: var(--ink); }
+.fab.del:hover { color: #dc2626; border-color: #fca5a5; background: #fff5f5; }
+
+textarea {
+  width: 100%;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+textarea:focus { border-color: var(--ink); background: var(--surface); }
+textarea::placeholder { color: var(--ink-ghost); }
+
+input[type="text"] {
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+input[type="text"]:focus { border-color: var(--ink); background: var(--surface); }
+input[type="text"]::placeholder { color: var(--ink-ghost); }
+
+.field-error { font-size: 12px; color: #dc2626; margin-top: 8px; display: none; font-weight: 500; }
+.field-error.show { display: block; }
+
+.run-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+  border-radius: var(--radius);
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-top: 0.5rem;
+}
+.run-btn:hover { background: #2a2a2a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.run-btn:active { transform: translateY(0); }
+.run-btn:disabled { background: var(--border-strong); cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Results */
+.results-wrap { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+.results-actions { display: flex; gap: 8px; margin-bottom: 0.5rem; align-items: center; }
+.results-action-btn { font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 10px; border: 1.5px solid var(--border-strong); background: var(--surface); cursor: pointer; color: var(--ink-soft); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.results-action-btn:hover { border-color: var(--ink); color: var(--ink); }
+.results-action-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.results-action-btn.primary:hover { background: #2a2a2a; }
+.new-test-link { font-size: 12px; color: var(--ink-soft); cursor: pointer; margin-left: auto; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
+.new-test-link:hover { color: var(--ink); }
+
+.summary-card { background: var(--ink); border-radius: var(--radius); overflow: hidden; }
+.summary-header { padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+.summary-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+.summary-badge { font-size: 11px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 20px; margin-left: auto; font-weight: 500; }
+.summary-content { padding: 1.25rem 1.25rem; font-size: 14px; line-height: 1.85; color: rgba(255,255,255,0.75); white-space: pre-wrap; border-top: 1px solid rgba(255,255,255,0.08); font-weight: 300; }
+
+.acc-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.acc-header { padding: 14px 18px; background: var(--surface-2); display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; transition: background 0.12s; }
+.acc-header:hover { background: var(--surface-3); }
+.acc-persona-icon { font-size: 20px; }
+.acc-persona-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; flex: 1; letter-spacing: -0.02em; }
+.acc-stars { font-size: 14px; color: #d97706; }
+.acc-toggle { font-size: 11px; color: var(--ink-ghost); margin-left: 8px; transition: transform 0.2s; display: inline-block; }
+.acc-toggle.open { transform: rotate(180deg); }
+.acc-body { display: none; }
+.acc-body.open { display: block; }
+.acc-content { padding: 1.5rem 1.25rem; font-size: 14px; line-height: 1.85; color: var(--ink); white-space: pre-wrap; font-weight: 300; }
+.acc-rating-row { padding: 12px 18px; border-top: 1px solid var(--border); background: var(--surface-2); display: flex; gap: 24px; flex-wrap: wrap; }
+.rating-item { display: flex; flex-direction: column; gap: 3px; }
+.rating-label { font-size: 10px; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.rating-stars { font-size: 13px; color: #d97706; }
+
+/* History */
+.history-panel { display: none; margin-top: 1rem; }
+.history-panel.show { display: block; }
+.history-toggle { font-size: 12px; color: var(--ink-ghost); cursor: pointer; margin-top: 2rem; text-align: center; padding: 10px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-weight: 500; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+.history-toggle:hover { border-color: var(--border-strong); color: var(--ink-soft); }
+.history-empty { text-align: center; padding: 2rem; color: var(--ink-ghost); font-size: 13px; font-weight: 300; }
+.history-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+.history-item:hover { border-color: var(--border-strong); }
+.history-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.history-item-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; flex: 1; letter-spacing: -0.01em; }
+.history-item-date { font-size: 11px; color: var(--ink-ghost); }
+.history-item-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.history-chip { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 10px; color: var(--ink-soft); font-weight: 400; }
+.history-clear { font-size: 11px; color: #dc2626; cursor: pointer; float: right; margin-bottom: 8px; font-weight: 500; }
+.history-clear:hover { text-decoration: underline; }
+
+.dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--ink-ghost); margin: 0 1px; animation: dotAnim 1.2s infinite; }
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotAnim{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; backdrop-filter: blur(4px); }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: 20px; padding: 2rem; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); }
+.modal h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.03em; }
+.modal .modal-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 1.5rem; font-weight: 300; }
+.modal-field { margin-bottom: 1.1rem; }
+.modal-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 700; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 8px; }
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip { border: 1.5px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 13px; cursor: pointer; background: var(--surface); color: var(--ink-soft); transition: all 0.12s; user-select: none; font-family: 'DM Sans', sans-serif; font-weight: 400; }
+.chip:hover { border-color: var(--border-strong); color: var(--ink); }
+.chip.active { border-color: var(--ink); background: var(--ink); color: #fff; }
+.modal-divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+.modal-section-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; font-weight: 700; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.modal-section-title::after { content:''; flex:1; border-top:1px solid var(--border); }
+.modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+.modal-cancel { flex:1; padding:11px; border-radius:12px; border:1.5px solid var(--border); background:var(--surface); font-size:14px; cursor:pointer; color:var(--ink-soft); font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.15s; }
+.modal-cancel:hover { background:var(--surface-2); border-color:var(--border-strong); color:var(--ink); }
+.modal-primary { flex:2; padding:11px; border-radius:12px; border:none; background:var(--ink); color:#fff; font-size:14px; font-weight:700; font-family:'Syne',sans-serif; cursor:pointer; transition:all 0.15s; letter-spacing:-0.01em; }
+.modal-primary:hover { background:#2a2a2a; }
+.modal-primary:disabled { background:var(--border-strong); cursor:not-allowed; }
+.modal-generating { font-size:13px; color:var(--ink-soft); text-align:center; padding:6px; display:none; font-weight:300; }
+.ai-regen-btn { font-size:12px; color:var(--ink-soft); background:none; border:1.5px solid var(--border); border-radius:8px; cursor:pointer; padding:5px 12px; font-family:'DM Sans',sans-serif; font-weight:500; transition:all 0.15s; margin-top:6px; }
+.ai-regen-btn:hover { border-color:var(--ink); color:var(--ink); }
+
+.api-warning { background:#fffbeb; border:1.5px solid #fde68a; border-radius:var(--radius-sm); padding:12px 16px; font-size:13px; color:#92400e; margin-bottom:2rem; font-weight:400; }
+
+@media print {
+  .mode-tabs,.run-btn,.results-actions,.card-actions,.select-row,.step,.api-warning,.history-toggle,.new-test-link,.app-logo-tag{display:none!important}
+  .acc-body{display:block!important}
+  body{background:#fff}
+  .container{padding:1rem}
+  .acc-card,.summary-card{break-inside:avoid}
+}
+
+.history-icon-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink-soft);
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.history-icon-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.history-icon-btn:hover svg { stroke: #fff; }
+
+.history-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 300;
+  display: none;
+  backdrop-filter: blur(2px);
+}
+.history-drawer-overlay.open { display: block; }
+
+.history-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 360px;
+  max-width: 90vw;
+  background: var(--surface);
+  border-left: 1.5px solid var(--border);
+  z-index: 301;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.history-drawer.open { transform: translateX(0); }
+
+.history-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.history-drawer-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.history-drawer-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.history-drawer-close:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.history-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.drawer-empty { text-align: center; padding: 3rem 1rem; color: var(--ink-ghost); font-size: 13px; font-weight: 300; }
+.drawer-clear { font-size: 11px; color: #dc2626; cursor: pointer; font-weight: 500; text-align: right; margin-bottom: 10px; display: block; }
+.drawer-clear:hover { text-decoration: underline; }
+.drawer-item { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+.drawer-item:hover { border-color: var(--ink); transform: translateX(-2px); }
+.drawer-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.drawer-item-title { font-size: 12px; font-weight: 600; color: var(--ink); line-height: 1.4; flex: 1; }
+.drawer-item-date { font-size: 10px; color: var(--ink-ghost); white-space: nowrap; flex-shrink: 0; }
+.drawer-item-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.drawer-chip { font-size: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; color: var(--ink-soft); }
+
+/* ======= SILENT TEST SCREEN ======= */
+.silent-screen { display: none; position: fixed; inset: 0; background: #0d0d0d; z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
+.silent-screen.show { display: flex; }
+
+.silent-bg-dots { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.silent-bg-dots span { position: absolute; width: 2px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 50%; animation: floatDot linear infinite; }
+
+@keyframes floatDot { 0%{transform:translateY(100vh);opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{transform:translateY(-100px);opacity:0} }
+
+.silent-inner { text-align: center; z-index: 1; max-width: 400px; padding: 2rem; }
+
+.shh-emoji { font-size: 64px; display: block; margin-bottom: 1.5rem; animation: shhPulse 2.5s ease-in-out infinite; }
+@keyframes shhPulse { 0%,100%{transform:scale(1) rotate(-2deg)} 50%{transform:scale(1.08) rotate(2deg)} }
+
+.silent-title { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: 0.03em; margin-bottom: 8px; }
+.silent-subtitle { font-size: 14px; color: #666; margin-bottom: 2.5rem; }
+
+/* Status feed */
+.status-feed { width: 100%; max-width: 320px; margin: 0 auto 2.5rem; }
+.status-line { display: flex; align-items: center; gap: 10px; padding: 8px 0; opacity: 0; transform: translateY(8px); transition: all 0.4s ease; border-bottom: 1px solid #1a1a1a; }
+.status-line.visible { opacity: 1; transform: translateY(0); }
+.status-line.done { border-bottom-color: #1f3a1f; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #333; flex-shrink: 0; transition: background 0.3s; }
+.status-line.active .status-dot { background: #4ade80; animation: dotPulse 1s ease-in-out infinite; }
+.status-line.done .status-dot { background: #4ade80; animation: none; }
+@keyframes dotPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:0.7} }
+.status-text { font-size: 13px; color: #555; flex: 1; text-align: left; transition: color 0.3s; }
+.status-line.active .status-text { color: #ccc; }
+.status-line.done .status-text { color: #4ade80; }
+.status-check { font-size: 12px; color: #4ade80; opacity: 0; transition: opacity 0.3s; }
+.status-line.done .status-check { opacity: 1; }
+
+/* Persona progress */
+.persona-progress { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+.persona-pip { display: flex; align-items: center; gap: 6px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 20px; padding: 5px 12px; font-size: 12px; color: #555; transition: all 0.3s; }
+.persona-pip.active { border-color: #4ade80; color: #ccc; }
+.persona-pip.done { background: #0f2a0f; border-color: #4ade80; color: #4ade80; }
+.persona-pip-icon { font-size: 14px; }
+
+/* Wave animation at bottom */
+.silent-wave { display: flex; gap: 4px; align-items: flex-end; justify-content: center; height: 30px; }
+.wave-bar { width: 4px; background: #2a2a2a; border-radius: 2px; animation: wave 1.2s ease-in-out infinite; }
+.wave-bar:nth-child(1){animation-delay:0s;height:8px}
+.wave-bar:nth-child(2){animation-delay:0.1s;height:16px}
+.wave-bar:nth-child(3){animation-delay:0.2s;height:24px}
+.wave-bar:nth-child(4){animation-delay:0.3s;height:16px}
+.wave-bar:nth-child(5){animation-delay:0.4s;height:8px}
+.wave-bar:nth-child(6){animation-delay:0.3s;height:16px}
+.wave-bar:nth-child(7){animation-delay:0.2s;height:24px}
+.wave-bar:nth-child(8){animation-delay:0.1s;height:16px}
+.wave-bar:nth-child(9){animation-delay:0s;height:8px}
+@keyframes wave { 0%,100%{transform:scaleY(0.4);background:#2a2a2a} 50%{transform:scaleY(1);background:#4ade80} }
+
+/* Results */
+.results-wrap { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+.results-actions { display: flex; gap: 8px; margin-bottom: 0.5rem; align-items: center; }
+.results-action-btn { font-size: 12px; padding: 6px 14px; border-radius: 8px; border: 1px solid #e0e0d8; background: #fff; cursor: pointer; color: #555; transition: all 0.15s; }
+.results-action-btn:hover { border-color: #bbb; background: #f5f5f0; }
+.results-action-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.results-action-btn.primary:hover { background: #333; }
+.new-test-link { font-size: 12px; color: #378ADD; cursor: pointer; margin-left: auto; }
+.new-test-link:hover { text-decoration: underline; }
+
+.summary-card { background: #1a1a1a; border-radius: 12px; overflow: hidden; }
+.summary-header { padding: 14px 16px; display: flex; align-items: center; gap: 10px; }
+.summary-title { font-size: 14px; font-weight: 600; color: #fff; }
+.summary-badge { font-size: 11px; background: #333; color: #ccc; padding: 2px 8px; border-radius: 20px; margin-left: auto; }
+.summary-content { padding: 1.25rem; font-size: 14px; line-height: 1.85; color: #e8e8e4; white-space: pre-wrap; border-top: 1px solid #333; }
+
+.acc-card { background: #fff; border: 1px solid #e0e0d8; border-radius: 12px; overflow: hidden; }
+.acc-header { padding: 12px 16px; background: #f5f5f0; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; transition: background 0.1s; }
+.acc-header:hover { background: #eeede8; }
+.acc-persona-icon { font-size: 18px; }
+.acc-persona-name { font-size: 14px; font-weight: 600; flex: 1; }
+.acc-stars { font-size: 13px; color: #e67e22; }
+.acc-toggle { font-size: 12px; color: #999; margin-left: 8px; transition: transform 0.2s; display: inline-block; }
+.acc-toggle.open { transform: rotate(180deg); }
+.acc-body { display: none; }
+.acc-body.open { display: block; }
+.acc-content { padding: 1.25rem; font-size: 14px; line-height: 1.85; color: #1a1a1a; white-space: pre-wrap; }
+.acc-rating-row { padding: 10px 16px; border-top: 1px solid #e0e0d8; background: #f5f5f0; display: flex; gap: 20px; flex-wrap: wrap; }
+.rating-item { display: flex; flex-direction: column; gap: 2px; }
+.rating-label { font-size: 11px; color: #888; }
+.rating-stars { font-size: 13px; color: #e67e22; }
+
+/* History panel */
+.history-panel { display: none; margin-top: 1rem; }
+.history-panel.show { display: block; }
+.history-toggle { font-size: 12px; color: #888; cursor: pointer; margin-top: 1.5rem; text-align: center; padding: 8px; border: 1px solid #e0e0d8; border-radius: 8px; background: #fff; }
+.history-toggle:hover { background: #f5f5f0; }
+.history-empty { text-align: center; padding: 2rem; color: #888; font-size: 13px; }
+.history-item { background: #fff; border: 1px solid #e0e0d8; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s; }
+.history-item:hover { border-color: #bbb; }
+.history-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.history-item-title { font-size: 13px; font-weight: 600; flex: 1; }
+.history-item-date { font-size: 11px; color: #888; }
+.history-item-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.history-chip { font-size: 11px; background: #f5f5f0; border: 1px solid #e0e0d8; border-radius: 20px; padding: 2px 8px; color: #555; }
+.history-clear { font-size: 11px; color: #e74c3c; cursor: pointer; float: right; margin-bottom: 8px; }
+.history-clear:hover { text-decoration: underline; }
+
+.dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #888; margin: 0 1px; animation: dotAnim 1.2s infinite; }
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes dotAnim{0%,80%,100%{opacity:0.3}40%{opacity:1}}
+
+/* Modal */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 16px; padding: 1.75rem; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+.modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.modal .modal-sub { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+.modal-field { margin-bottom: 1.1rem; }
+.modal-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 7px; }
+.chip-group { display: flex; flex-wrap: wrap; gap: 7px; }
+.chip { border: 1.5px solid #e0e0d8; border-radius: 20px; padding: 5px 13px; font-size: 13px; cursor: pointer; background: #fff; color: #333; transition: all 0.12s; user-select: none; }
+.chip:hover { border-color: #bbb; }
+.chip.active { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+.modal-divider { border: none; border-top: 1px solid #e0e0d8; margin: 1.25rem 0; }
+.modal-section-title { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.modal-section-title::after { content:''; flex:1; border-top:1px solid #e0e0d8; }
+.modal-actions { display: flex; gap: 10px; margin-top: 1.5rem; }
+.modal-cancel { flex:1; padding:10px; border-radius:8px; border:1px solid #e0e0d8; background:#fff; font-size:14px; cursor:pointer; color:#555; }
+.modal-cancel:hover { background:#f5f5f0; }
+.modal-primary { flex:2; padding:10px; border-radius:8px; border:none; background:#1a1a1a; color:#fff; font-size:14px; font-weight:600; cursor:pointer; }
+.modal-primary:hover { background:#333; }
+.modal-primary:disabled { background:#ccc; cursor:not-allowed; }
+.modal-generating { font-size:13px; color:#888; text-align:center; padding:6px; display:none; }
+.ai-regen-btn { font-size:12px; color:#378ADD; background:none; border:none; cursor:pointer; padding:0; margin-top:4px; }
+.ai-regen-btn:hover { text-decoration:underline; }
+.api-warning { background:#fff8e1; border:1px solid #ffe082; border-radius:10px; padding:12px 16px; font-size:13px; color:#795548; margin-bottom:1.5rem; }
+
+/* History drawer */
+.history-btn {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.history-btn:hover { border-color: var(--ink); color: var(--ink); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.history-btn .hb-count { background: var(--ink); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
+
+.history-drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 150; display: none; backdrop-filter: blur(2px); }
+.history-drawer-overlay.open { display: block; }
+.history-drawer {
+  position: fixed;
+  top: 0;
+  right: -420px;
+  width: 400px;
+  height: 100vh;
+  background: var(--surface);
+  z-index: 151;
+  box-shadow: -4px 0 32px rgba(0,0,0,0.12);
+  transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.history-drawer.open { right: 0; }
+.drawer-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.drawer-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; flex: 1; letter-spacing: -0.02em; }
+.drawer-close { width: 32px; height: 32px; border-radius: 8px; background: var(--surface-2); border: none; cursor: pointer; font-size: 16px; color: var(--ink-soft); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.drawer-close:hover { background: var(--surface-3); color: var(--ink); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 16px; }
+.drawer-empty { text-align: center; padding: 3rem 1rem; color: var(--ink-ghost); font-size: 13px; font-weight: 300; }
+.drawer-clear { font-size: 11px; color: #dc2626; cursor: pointer; font-weight: 500; padding: 4px 0; display: inline-block; margin-bottom: 12px; }
+.drawer-clear:hover { text-decoration: underline; }
+.drawer-item {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.drawer-item:hover { border-color: var(--ink); transform: translateX(-2px); }
+.drawer-item-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+.drawer-item-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; flex: 1; letter-spacing: -0.01em; line-height: 1.4; }
+.drawer-item-date { font-size: 10px; color: var(--ink-ghost); white-space: nowrap; margin-top: 2px; }
+.drawer-item-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+.drawer-chip { font-size: 11px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 20px; padding: 2px 8px; color: var(--ink-soft); }
+
+@media print {
+  .mode-tabs,.run-btn,.results-actions,.card-actions,.select-row,.step,.api-warning,.history-toggle,.new-test-link,.history-btn{display:none!important}
+  .acc-body{display:block!important}
+  body{background:#fff}
+  .container{padding:1rem}
+  .acc-card,.summary-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- HISTORY BUTTON -->
+<button class="history-btn" onclick="openHistoryDrawer()">
+  🕐 Geçmiş <span class="hb-count" id="historyCount">0</span>
+</button>
+
+<!-- HISTORY DRAWER -->
+<div class="history-drawer-overlay" id="drawerOverlay" onclick="closeHistoryDrawer()"></div>
+<div class="history-drawer" id="historyDrawer">
+  <div class="drawer-header">
+    <div class="drawer-title">Geçmiş testler</div>
+    <button class="drawer-close" onclick="closeHistoryDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<div class="silent-screen" id="silentScreen">
+  <div class="silent-bg-dots" id="bgDots"></div>
+  <div class="silent-inner">
+    <span class="shh-emoji">🤫</span>
+    <div class="silent-title">Şşş... sessiz test var</div>
+    <div class="silent-subtitle" id="silentSubtitle">Kullanıcılar gözlemleniyor</div>
+
+    <div class="persona-progress" id="personaProgress"></div>
+
+    <div class="status-feed" id="statusFeed"></div>
+
+    <div class="silent-wave">
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+      <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONA MODAL -->
+<div class="modal-overlay" id="personaModal" onclick="closeModalOnOverlay(event)">
+  <div class="modal">
+    <h2 id="modalTitle">Yeni persona oluştur</h2>
+    <p class="modal-sub" id="modalSub">Chiplerle tanımla veya manuel doldur.</p>
+    <div class="modal-field">
+      <span class="modal-label">Kullanıcı tipi</span>
+      <div class="chip-group" id="m_tipGroup">
+        <div class="chip" onclick="mSelect('tip','Son kullanıcı',this)">👤 Son kullanıcı</div>
+        <div class="chip" onclick="mSelect('tip','Profesyonel / İş kullanıcısı',this)">💼 Profesyonel</div>
+        <div class="chip" onclick="mSelect('tip','Yönetici / Karar verici',this)">🎯 Yönetici</div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">Teknoloji seviyesi</span>
+      <div class="chip-group" id="m_techGroup">
+        <div class="chip" onclick="mSelect('tech','Çok düşük',this)">😰 Çok düşük</div>
+        <div class="chip" onclick="mSelect('tech','Orta',this)">🙂 Orta</div>
+        <div class="chip" onclick="mSelect('tech','İyi',this)">😎 İyi</div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">Yaş aralığı</span>
+      <div class="chip-group" id="m_yasGroup">
+        <div class="chip" onclick="mSelect('yas','18-28',this)">18–28</div>
+        <div class="chip" onclick="mSelect('yas','29-40',this)">29–40</div>
+        <div class="chip" onclick="mSelect('yas','41-55',this)">41–55</div>
+        <div class="chip" onclick="mSelect('yas','55+',this)">55+</div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">Motivasyon eğilimi</span>
+      <div class="chip-group" id="m_motivGroup">
+        <div class="chip" onclick="mSelect('motiv','Hızlı sonuç istiyor',this)">⚡ Hız</div>
+        <div class="chip" onclick="mSelect('motiv','Güven arıyor',this)">🛡️ Güven</div>
+        <div class="chip" onclick="mSelect('motiv','Fiyat odaklı',this)">💰 Fiyat</div>
+        <div class="chip" onclick="mSelect('motiv','Detay odaklı',this)">🔍 Detay</div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <span class="modal-label">Eklemek istediğin başka bir şey</span>
+      <textarea id="m_extra" style="min-height:65px;" placeholder="Örn: İlk kez kullanıyor, mobilde geziyor, acele ediyor..."></textarea>
+    </div>
+    <div class="modal-generating" id="modalGenerating"><span class="dot"></span><span class="dot"></span><span class="dot"></span> <span id="generatingText">İşleniyor...</span></div>
+    <hr class="modal-divider">
+    <div class="modal-section-title">Manuel düzenle</div>
+    <div class="modal-field"><span class="modal-label">İsim</span><input type="text" id="m_isim" placeholder="Örn: Ayşe Kaya"></div>
+    <div class="modal-field"><span class="modal-label">Rol / Meslek</span><input type="text" id="m_rol" placeholder="Örn: Freelance tasarımcı"></div>
+    <div class="modal-field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div><span class="modal-label">Yaş</span><input type="text" id="m_yas_val" placeholder="Örn: 34"></div>
+      <div><span class="modal-label">Şehir</span><input type="text" id="m_sehir" placeholder="Örn: İzmir"></div>
+    </div>
+    <div class="modal-field"><span class="modal-label">Motivasyon</span><textarea id="m_motivasyon" style="min-height:55px;" placeholder="Bu kullanıcıyı ne motive ediyor?"></textarea></div>
+    <div class="modal-field"><span class="modal-label">Acı noktaları</span><textarea id="m_pain" style="min-height:55px;" placeholder="Ne tür zorluklarla karşılaşıyor?"></textarea></div>
+    <div class="modal-field"><span class="modal-label">Hedef</span><textarea id="m_hedef" style="min-height:55px;" placeholder="Bu kullanıcının temel hedefi ne?"></textarea></div>
+    <button class="ai-regen-btn" onclick="regenFromChips()">✦ Chiplerden yeniden oluştur</button>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">İptal</button>
+      <button class="modal-primary" id="modalSaveBtn" onclick="savePersona()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+
+
+    <div class="app-logo">
+      <span class="app-logo-mark">myPersonas</span>
+      <span class="app-logo-tag">Beta</span>
+    </div>
+    <p class="subtitle">Ekranlarını gerçek kullanıcı gözünden test et</p>
+  </div>
+
+  <div class="api-warning" id="apiWarning">⚠️ API key eksik. Dosyada <strong>YOUR_API_KEY_HERE</strong> yazan yeri kendi key'inle değiştir.</div>
+
+  <!-- Mode tabs -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="switchMode('single', this)">Tek kullanıcıyla test</button>
+    <button class="mode-tab" onclick="switchMode('multi', this)">Toplu test</button>
+  </div>
+
+  <!-- PERSONA SECTION -->
+  <div class="section-label" id="personaLabel">Persona seç</div>
+  <div class="persona-grid" id="personaGrid"></div>
+  <div class="select-row" id="selectRow" style="display:none;">
+    <button class="select-all-btn" onclick="toggleSelectAll()">Tümünü seç</button>
+    <span class="selected-count" id="selectedCount"></span>
+  </div>
+
+  <!-- TEST SECTION -->
+  <div id="testSection" style="display:none;">
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-title">Test ekranlarını yükle</div>
+        <div class="step-badge" id="imgBadge" style="display:none;"></div>
+      </div>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imgInput').click()">
+        <input type="file" id="imgInput" accept="image/*" multiple onchange="handleImages(event)" style="display:none;">
+        <div style="font-size:26px;margin-bottom:6px;" id="uploadIcon">🖼️</div>
+        <div class="upload-text" id="uploadText">Ekran görüntüsü veya wireframe yükle<br><strong>Tıkla veya sürükle bırak</strong> · Birden fazla seçebilirsin</div>
+      </div>
+      <div class="field-error" id="imgError">⚠️ En az bir ekran görseli yüklemelisin.</div>
+      <div class="flow-list" id="flowList"></div>
+    </div>
+    <div class="step">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-title">Test senaryosunu yaz</div>
+      </div>
+      <textarea id="screenDesc" style="min-height:130px;" placeholder="Aşağıdaki şablonu doldur:&#10;&#10;Test ettiğim ekran: (örn: İlan detay sayfası)&#10;Kullanıcı bu ekranda ne yapıyor: (örn: Satıcıyla iletişime geçmeye çalışıyor)&#10;Öğrenmek istediğim: (örn: İletişim butonu yeterince görünür mü, güven veriyor mu?)"></textarea>
+      <div class="field-error" id="scenarioError">⚠️ Test senaryosunu yazmadan devam edemezsin.</div>
+    </div>
+    <button class="run-btn" id="runBtn" onclick="runTest()">Testi başlat →</button>
+    <div id="resultContainer"></div>
+
+
+  </div>
+</div>
+
+<script>
+const API_KEY = "YOUR_API_KEY_HERE";
+
+let currentMode = 'single';
+let singleSelected = null;
+let multiSelected = [];
+let flowItems = [];
+let editingId = null;
+let nextId = 10;
+const mSel = { tip:null, tech:null, yas:null, motiv:null };
+
+const personas = [
+  { id:0, icon:"🏢", name:"Mehmet Aydın", role:"Emlak ofisi sahibi", age:48, city:"İstanbul", tech:"Orta", motivation:"Sahibinden'e bağımlılıktan kurtulmak", pain:"Yüksek ilan maliyeti, toplu ilan yönetimi zorluğu", goal:"Çok sayıda ilan yönetmek, müşteriye hızlı ulaşmak", iconBg:"#E6F1FB", badge:"Profesyonel" },
+  { id:1, icon:"🚗", name:"Serkan Kaya", role:"Araç galerisi sahibi", age:39, city:"Ankara", tech:"Orta", motivation:"Daha fazla alıcıya ulaşmak", pain:"İlan güncelleme yükü, rakip görünürlüğü", goal:"Stok listelemek, araç detay sayfasını iyi göstermek", iconBg:"#EAF3DE", badge:"Profesyonel" },
+  { id:2, icon:"🏠", name:"Ayşe Demir", role:"Bireysel emlak ilanı veren", age:34, city:"İzmir", tech:"Temel", motivation:"Evini aracısız satmak", pain:"İlan oluşturma karmaşıklığı, güven sorunları", goal:"Hızlı, kolay ilan vermek", iconBg:"#FAEEDA", badge:"Bireysel" },
+  { id:3, icon:"🚙", name:"Burak Şahin", role:"Bireysel vasıta ilanı veren", age:27, city:"Bursa", tech:"İyi", motivation:"Aracını hızlı satmak", pain:"Sahte alıcılar, değer tespiti zorluğu", goal:"Hızlı ilan vermek, fiyat karşılaştırmak", iconBg:"#FAEEDA", badge:"Bireysel" },
+  { id:4, icon:"🔍", name:"Fatma Yılmaz", role:"Sadece ilan arayan", age:31, city:"İstanbul", tech:"İyi", motivation:"Doğru fiyata uygun ev/araç bulmak", pain:"Sahte ilanlar, eski ilanlar", goal:"Hızlı filtrelemek, güvenilir ilan görmek", iconBg:"#F1EFE8", badge:"Son kullanıcı" },
+  { id:5, icon:"😅", name:"Naim Çelik", role:"Her işe bakan serbest emlakçı", age:56, city:"Konya", tech:"Çok düşük", motivation:"İlanı bir yere koyup kurtulmak", pain:"Bilgisayarda kaybolup gidiyor, yanlış kategoriye ilan açıyor", goal:"Az adımla ilanı yayınlamak ve telefon almak", iconBg:"#F1EFE8", badge:"Bireysel" }
+];
+
+/* Mode switch */
+function switchMode(mode, el) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+  singleSelected = null;
+  multiSelected = [];
+  document.getElementById('selectRow').style.display = mode === 'multi' ? 'flex' : 'none';
+  document.getElementById('personaLabel').textContent = mode === 'single' ? 'Persona seç' : 'Persona seç — birden fazla seçebilirsin';
+  document.getElementById('testSection').style.display = 'none';
+  document.getElementById('resultContainer').innerHTML = '';
+  renderPersonas();
+}
+
+/* Personas */
+function renderPersonas() {
+  var grid = document.getElementById('personaGrid');
+  grid.innerHTML = personas.map(function(p) {
+    var isSingleActive = currentMode==='single' && singleSelected===p.id;
+    var isMultiActive = currentMode==='multi' && multiSelected.indexOf(p.id)>-1;
+    var cls = 'persona-card' + (isSingleActive?' active-single':'') + (isMultiActive?' active-multi':'');
+    return '<div class="'+cls+'" id="pc-'+p.id+'" onclick="togglePersona('+p.id+')">' +
+      '<div class="card-actions">' +
+      '<button class="card-action-btn" title="Düzenle" onclick="openEdit(event,'+p.id+')">✎</button>' +
+      (!p.preset?'<button class="card-action-btn del" title="Sil" onclick="deletePersona(event,'+p.id+')">✕</button>':'') +
+      '</div>' +
+      '<div class="persona-icon" style="background:'+p.iconBg+'">'+p.icon+'</div>' +
+      '<div class="persona-name">'+p.name+'</div>' +
+      '<div class="persona-role">'+p.role+'</div>' +
+      '</div>';
+  }).join('') +
+  '<div class="persona-card add-card" onclick="openAdd()"><div style="font-size:22px;">+</div><div style="font-size:12px;font-weight:500;">Yeni persona</div></div>';
+  updateSelectedCount();
+}
+
+function togglePersona(id) {
+  if (currentMode === 'single') {
+    singleSelected = (singleSelected === id) ? null : id;
+    document.getElementById('testSection').style.display = singleSelected !== null ? 'block' : 'none';
+  } else {
+    var idx = multiSelected.indexOf(id);
+    if (idx > -1) multiSelected.splice(idx,1); else multiSelected.push(id);
+    document.getElementById('testSection').style.display = multiSelected.length > 0 ? 'block' : 'none';
+  }
+  document.getElementById('resultContainer').innerHTML = '';
+  renderPersonas();
+}
+
+function toggleSelectAll() {
+  if (multiSelected.length === personas.length) multiSelected = [];
+  else multiSelected = personas.map(function(p){return p.id;});
+  renderPersonas();
+  document.getElementById('testSection').style.display = multiSelected.length > 0 ? 'block' : 'none';
+}
+
+function updateSelectedCount() {
+  var el = document.getElementById('selectedCount');
+  var btn = document.querySelector('.select-all-btn');
+  if (!el || !btn) return;
+  if (multiSelected.length === 0) { el.textContent=''; btn.textContent='Tümünü seç'; }
+  else if (multiSelected.length === personas.length) { el.textContent='Tümü seçili'; btn.textContent='Seçimi kaldır'; }
+  else { el.textContent=multiSelected.length+' persona seçildi'; btn.textContent='Tümünü seç'; }
+}
+
+function deletePersona(e, id) {
+  e.stopPropagation();
+  var idx = personas.findIndex(function(p){return p.id===id;});
+  if (idx>-1) personas.splice(idx,1);
+  if (singleSelected===id) singleSelected=null;
+  multiSelected = multiSelected.filter(function(x){return x!==id;});
+  renderPersonas();
+  var hasAny = currentMode==='single' ? singleSelected!==null : multiSelected.length>0;
+  document.getElementById('testSection').style.display = hasAny ? 'block' : 'none';
+}
+
+/* Modal */
+function resetModal() {
+  Object.keys(mSel).forEach(function(k){mSel[k]=null;});
+  document.querySelectorAll('#personaModal .chip').forEach(function(c){c.classList.remove('active');});
+  ['m_extra','m_isim','m_rol','m_yas_val','m_sehir','m_motivasyon','m_pain','m_hedef'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('modalGenerating').style.display='none';
+  document.getElementById('modalSaveBtn').disabled=false;
+}
+
+function openAdd(){editingId=null;resetModal();document.getElementById('modalTitle').textContent='Yeni persona oluştur';document.getElementById('modalSub').textContent='Chiplerle tanımla veya manuel doldur.';document.getElementById('personaModal').className='modal-overlay open';}
+
+function openEdit(e,id){
+  e.stopPropagation();
+  var p=personas.find(function(x){return x.id===id;});if(!p)return;
+  editingId=id;resetModal();
+  document.getElementById('modalTitle').textContent=p.name+' — düzenle';
+  document.getElementById('modalSub').textContent='Chipleri güncelleyip yeniden oluşturabilir veya direkt düzenleyebilirsin.';
+  document.getElementById('m_isim').value=p.name||'';document.getElementById('m_rol').value=p.role||'';document.getElementById('m_yas_val').value=p.age||'';document.getElementById('m_sehir').value=p.city||'';document.getElementById('m_motivasyon').value=p.motivation||'';document.getElementById('m_pain').value=p.pain||'';document.getElementById('m_hedef').value=p.goal||'';
+  var techVal=(p.tech==='Temel')?'Orta':p.tech;
+  document.querySelectorAll('#m_techGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m&&m[1]===techVal){c.classList.add('active');mSel.tech=techVal;}});
+  document.querySelectorAll('#m_tipGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m&&p.badge&&m[1].indexOf(p.badge)>-1){c.classList.add('active');mSel.tip=m[1];}});
+  document.querySelectorAll('#m_yasGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m){var age=parseInt(p.age);if((m[1]==='18-28'&&age>=18&&age<=28)||(m[1]==='29-40'&&age>=29&&age<=40)||(m[1]==='41-55'&&age>=41&&age<=55)||(m[1]==='55+'&&age>55)){c.classList.add('active');mSel.yas=m[1];}}});
+  document.getElementById('personaModal').className='modal-overlay open';
+}
+
+function closeModal(){document.getElementById('personaModal').className='modal-overlay';editingId=null;resetModal();}
+function closeModalOnOverlay(e){if(e.target===document.getElementById('personaModal'))closeModal();}
+function mSelect(key,value,el){mSel[key]=value;el.parentElement.querySelectorAll('.chip').forEach(function(c){c.classList.remove('active');});el.classList.add('active');}
+
+async function regenFromChips(){
+  if(!mSel.tip&&!mSel.tech&&!mSel.yas)return alert('En az bir chip seç.');
+  if(API_KEY==="YOUR_API_KEY_HERE")return alert('API key eksik!');
+  document.getElementById('modalGenerating').style.display='block';document.getElementById('generatingText').textContent='Yeniden oluşturuluyor...';
+  await generateFromChips();
+}
+
+async function generateFromChips(){
+  var extra=document.getElementById('m_extra').value.trim();
+  var prompt='Bir UX test aracı için kısa bir kullanıcı personası oluştur.\n\nBilgiler:\n'+(mSel.tip?'- Kullanıcı tipi: '+mSel.tip+'\n':'')+(mSel.tech?'- Teknoloji seviyesi: '+mSel.tech+'\n':'')+(mSel.yas?'- Yaş aralığı: '+mSel.yas+'\n':'')+(mSel.motiv?'- Motivasyon eğilimi: '+mSel.motiv+'\n':'')+(extra?'- Ek bilgi: '+extra+'\n':'')+'\nSadece JSON formatında yanıt ver:\n{"isim":"...","sehir":"...","yas":XX,"rol":"...","motivasyon":"...","pain":"...","hedef":"..."}';
+  try{
+    var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:prompt}]})});
+    var data=await res.json();
+    var text=data.content.map(function(b){return b.text||"";}).join("").trim();
+    var json=JSON.parse(text.replace(/```json|```/g,"").trim());
+    document.getElementById('m_isim').value=json.isim||'';document.getElementById('m_rol').value=json.rol||'';document.getElementById('m_yas_val').value=json.yas||'';document.getElementById('m_sehir').value=json.sehir||'';document.getElementById('m_motivasyon').value=json.motivasyon||'';document.getElementById('m_pain').value=json.pain||'';document.getElementById('m_hedef').value=json.hedef||'';
+  }catch(err){alert('Oluşturulamadı: '+err.message);}
+  document.getElementById('modalGenerating').style.display='none';
+}
+
+function savePersona(){
+  var isim=document.getElementById('m_isim').value.trim(),rol=document.getElementById('m_rol').value.trim();
+  if(!isim||!rol)return alert('En az isim ve rol alanlarını doldur.');
+  var icons=["👤","👩","👨","🧑","👴","👵","🧔","👩‍💼","👨‍💼","🙋"],bgs=["#E6F1FB","#EAF3DE","#FAEEDA","#F1EFE8","#EEEDFE","#F0FFF4"];
+  if(editingId!==null){var p=personas.find(function(x){return x.id===editingId;});if(p){p.name=isim;p.role=rol;p.age=document.getElementById('m_yas_val').value||p.age;p.city=document.getElementById('m_sehir').value||p.city;p.motivation=document.getElementById('m_motivasyon').value||p.motivation;p.pain=document.getElementById('m_pain').value||p.pain;p.goal=document.getElementById('m_hedef').value||p.goal;}}
+  else{var newP={id:nextId++,preset:false,icon:icons[Math.floor(Math.random()*icons.length)],name:isim,role:rol,age:document.getElementById('m_yas_val').value||(mSel.yas||''),city:document.getElementById('m_sehir').value||'',tech:mSel.tech||'Orta',motivation:document.getElementById('m_motivasyon').value||'',pain:document.getElementById('m_pain').value||'',goal:document.getElementById('m_hedef').value||'',iconBg:bgs[Math.floor(Math.random()*bgs.length)],badge:mSel.tip||rol};personas.push(newP);if(currentMode==='single')singleSelected=newP.id;else multiSelected.push(newP.id);document.getElementById('testSection').style.display='block';}
+  renderPersonas();closeModal();
+}
+
+/* Images */
+function handleImages(event){
+  Array.from(event.target.files).forEach(function(file){
+    var img=new Image(),url=URL.createObjectURL(file);
+    img.onload=function(){var canvas=document.createElement('canvas'),MAX=1024,w=img.width,h=img.height;if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);var dataUrl=canvas.toDataURL('image/jpeg',0.85);flowItems.push({base64:dataUrl.split(',')[1],type:'image/jpeg',src:dataUrl,label:''});URL.revokeObjectURL(url);renderFlowList();};img.src=url;
+  });event.target.value='';
+}
+
+function renderFlowList(){
+  var list=document.getElementById('flowList'),badge=document.getElementById('imgBadge'),zone=document.getElementById('uploadZone');
+  document.getElementById('imgError').className='field-error';
+  if(flowItems.length===0){list.innerHTML='';badge.style.display='none';zone.className='upload-zone';document.getElementById('uploadIcon').textContent='🖼️';document.getElementById('uploadText').innerHTML='Ekran görüntüsü veya wireframe yükle<br><strong>Tıkla veya sürükle bırak</strong> · Birden fazla seçebilirsin';return;}
+  badge.style.display='inline';badge.textContent=flowItems.length+' ekran';zone.className='upload-zone has-files';document.getElementById('uploadIcon').textContent='✅';document.getElementById('uploadText').innerHTML='<strong>'+flowItems.length+' ekran yüklendi</strong> · Daha fazla eklemek için tıkla';
+  list.innerHTML=flowItems.map(function(item,i){return '<div class="flow-item"><div class="flow-num">'+(i+1)+'</div><img class="flow-thumb" src="'+item.src+'"><input class="flow-label-input" type="text" placeholder="Bu ekran ne?" value="'+item.label+'" oninput="flowItems['+i+'].label=this.value"><div class="flow-actions">'+(i>0?'<button class="fab" onclick="moveItem('+i+',-1)">↑</button>':'')+(i<flowItems.length-1?'<button class="fab" onclick="moveItem('+i+',1)">↓</button>':'')+'<button class="fab del" onclick="removeItem('+i+')">✕</button></div></div>';}).join('');
+}
+function moveItem(i,dir){var j=i+dir;if(j<0||j>=flowItems.length)return;var t=flowItems[i];flowItems[i]=flowItems[j];flowItems[j]=t;renderFlowList();}
+function removeItem(i){flowItems.splice(i,1);renderFlowList();}
+var uz=document.getElementById('uploadZone');
+uz.addEventListener('dragover',function(e){e.preventDefault();uz.style.borderColor='#378ADD';});
+uz.addEventListener('dragleave',function(){uz.style.borderColor='';});
+uz.addEventListener('drop',function(e){e.preventDefault();uz.style.borderColor='';Array.from(e.dataTransfer.files).filter(function(f){return f.type.startsWith('image/');}).forEach(function(file){handleImages({target:{files:[file]}});});});
+
+/* Silent screen */
+function spawnDots(){
+  var container=document.getElementById('bgDots');container.innerHTML='';
+  for(var i=0;i<25;i++){
+    var s=document.createElement('span');
+    s.style.left=Math.random()*100+'%';
+    s.style.animationDuration=(8+Math.random()*12)+'s';
+    s.style.animationDelay=(Math.random()*8)+'s';
+    s.style.width=s.style.height=(1+Math.random()*3)+'px';
+    container.appendChild(s);
+  }
+}
+
+var statusTimers=[];
+function clearStatusTimers(){statusTimers.forEach(clearTimeout);statusTimers=[];}
+
+function showSilentScreen(selected){
+  spawnDots();
+  document.getElementById('silentScreen').className='silent-screen show';
+
+  // Persona pills
+  var pp=document.getElementById('personaProgress');
+  pp.innerHTML=selected.map(function(p){return '<div class="persona-pip" id="pip-'+p.id+'"><span class="persona-pip-icon">'+p.icon+'</span>'+p.name+'</div>';}).join('');
+
+  // Status messages per persona
+  var allStatuses=[
+    'Kullanıcıyla görüşme başladı',
+    'Ekrana ilk bakışını yapıyor...',
+    'Gezinme kalıpları kaydediliyor',
+    'Tepkiler not ediliyor...',
+    'Detayları değerlendiriyor',
+    'Sorunlu noktaları işaretliyor...',
+    'Yorumu formüle ediyor',
+    'Bulgular derleniyor...'
+  ];
+  document.getElementById('statusFeed').innerHTML='';
+  document.getElementById('silentSubtitle').textContent='Kullanıcılar gözlemleniyor';
+}
+
+function updateSilentForPersona(p, idx, total){
+  // Update pills
+  document.querySelectorAll('.persona-pip').forEach(function(pip){pip.classList.remove('active');});
+  var activePip=document.getElementById('pip-'+p.id);
+  if(activePip)activePip.classList.add('active');
+
+  document.getElementById('silentSubtitle').textContent=(idx+1)+' / '+total+' kullanıcı test ediliyor';
+
+  var messages=[
+    p.icon+' '+p.name+' ile görüşme başladı',
+    'Ekrana ilk bakışını yapıyor...',
+    'İlk tepkileri kaydediliyor',
+    'Kullanıcı ekranla ilgili detayları cevaplıyor...',
+    'Sorunlu noktalar işaretleniyor',
+    'Notlar derleniyor...'
+  ];
+
+  clearStatusTimers();
+  var feed=document.getElementById('statusFeed');
+  feed.innerHTML='';
+
+  messages.forEach(function(msg,i){
+    var line=document.createElement('div');
+    line.className='status-line';
+    line.innerHTML='<div class="status-dot"></div><div class="status-text">'+msg+'</div><div class="status-check">✓</div>';
+    feed.appendChild(line);
+
+    var t1=setTimeout(function(){line.classList.add('visible','active');},i*1100);
+    var t2=setTimeout(function(){line.classList.remove('active');line.classList.add('done');},i*1100+900);
+    statusTimers.push(t1,t2);
+  });
+}
+
+function markPersonaDone(id){
+  var pip=document.getElementById('pip-'+id);
+  if(pip){pip.classList.remove('active');pip.classList.add('done');}
+}
+
+function hideSilentScreen(){
+  clearStatusTimers();
+  document.getElementById('silentScreen').className='silent-screen';
+}
+
+/* API */
+function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
+function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=document.getElementById('acc-toggle-'+id);if(body.classList.contains('open')){body.classList.remove('open');toggle.classList.remove('open');}else{body.classList.add('open');toggle.classList.add('open');}}
+
+async function callAPI(persona,scenario,flowDesc){
+  var textPrompt='Sen deneyimli bir UX araştırmacısısın.\n\nPLATFORM BAĞLAMI: Bu görseller Türkiye\'de faaliyet gösteren bir emlak ve vasıta ilan platformuna ait ekranlardır. Platform sahibinden.com\'a rakip olmayı hedeflemekte olup bireysel kullanıcıların ve profesyonel emlakçı/galericilerin ilan verdiği, alıcıların ise ilan arayıp satıcılarla iletişime geçtiği bir yapıya sahiptir.\n\nGÖREVİN: Önce görseldeki ekranı/ekranları analiz et — ne tür bir sayfa olduğunu, hangi UI elementlerin bulunduğunu, kullanıcının bu ekranda ne yapması gerektiğini anla. Ardından aşağıdaki persona kimliğine bürünerek birinci şahıs ağzından gerçekçi bir kullanıcı testi yorumu yaz.\n\nPERSONA:\n- Ad: '+persona.name+'\n- Rol: '+persona.role+(persona.city?'\n- Şehir: '+persona.city:'')+'\n- Yaş: '+persona.age+'\n- Teknoloji seviyesi: '+persona.tech+'\n- Motivasyon: '+persona.motivation+'\n- Acı noktaları: '+persona.pain+'\n- Hedef: '+persona.goal+'\n\nTEST SENARYOSU:\n'+scenario+flowDesc+'\n\nYORUM FORMATI — birinci şahıs, doğal ve gerçekçi:\n1. Bu ekranın ne olduğuna dair ilk izlenim\n2. Beğendiğin 2 şey (spesifik UI elementlerine referans ver)\n3. Sorun yaşadığın 2-3 şey (spesifik)\n'+(flowItems.length>1?'4. Akışta en çok zorlandığın adım\n':'')+  (flowItems.length>1?'5.':'4.')+' Değiştirilmesini istediğin 1 şey\n'+(flowItems.length>1?'6.':'5.')+' 10 üzerinden puan\n\nSonra tek satırda:\nRATINGS:{"genel":X,"kullanım_kolaylığı":X,"güven":X,"hız":X}\nX=1-5 tam sayı.';
+  var userContent=flowItems.map(function(item){return {type:"image",source:{type:"base64",media_type:item.type,data:item.base64}};}).concat([{type:"text",text:textPrompt}]);
+  var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:userContent}]})});
+  var data=await res.json();
+  if(data.error)throw new Error(data.error.message);
+  return data.content.map(function(b){return b.text||"";}).join("");
+}
+
+async function runTest(){
+  if(API_KEY==="YOUR_API_KEY_HERE")return alert('API key eksik!');
+  var selected=currentMode==='single' ? (singleSelected!==null?[personas.find(function(p){return p.id===singleSelected;})]:[]) : personas.filter(function(p){return multiSelected.indexOf(p.id)>-1;});
+  if(selected.length===0)return alert('Lütfen bir persona seç.');
+  var hasErr=false;
+  if(flowItems.length===0){document.getElementById('imgError').className='field-error show';hasErr=true;}
+  var scenario=document.getElementById('screenDesc').value.trim();
+  if(!scenario){document.getElementById('scenarioError').className='field-error show';hasErr=true;}
+  if(hasErr)return;
+  document.getElementById('imgError').className='field-error';
+  document.getElementById('scenarioError').className='field-error';
+
+  var btn=document.getElementById('runBtn');
+  btn.disabled=true;
+  var flowDesc=flowItems.length>0?'\n\nEKRAN AKIŞI ('+flowItems.length+' ekran):\n'+flowItems.map(function(item,i){return (i+1)+'. '+(item.label||'Etiket yok');}).join('\n'):'';
+
+  showSilentScreen(selected);
+
+  var results=[];
+  for(var i=0;i<selected.length;i++){
+    var p=selected[i];
+    updateSilentForPersona(p,i,selected.length);
+    try{
+      var text=await callAPI(p,scenario,flowDesc);
+      var rm=text.match(/RATINGS:(\{[^}]+\})/);
+      var r={genel:3,"kullanım_kolaylığı":3,güven:3,hız:3};
+      if(rm){try{r=JSON.parse(rm[1]);}catch(e){}}
+      var clean=text.replace(/RATINGS:\{[^}]+\}/,"").trim();
+      results.push({persona:p,text:clean,ratings:r,error:null});
+      markPersonaDone(p.id);
+    }catch(err){results.push({persona:p,text:null,error:err.message});markPersonaDone(p.id);}
+  }
+
+  // Summary for multi
+  var summaryHtml='';
+  if(selected.length>1){
+    document.getElementById('silentSubtitle').textContent='Genel özet hazırlanıyor...';
+    try{
+      var sp='Aşağıda '+results.length+' farklı kullanıcı personasının aynı UX testi için verdiği yorumlar var. Bu yorumları sentezleyerek kısa ve güçlü bir genel özet yaz.\n\n'+results.filter(function(r){return !r.error;}).map(function(r){return '--- '+r.persona.name+' ('+r.persona.role+') ---\n'+r.text;}).join('\n\n')+'\n\nÖzette şunları içersin:\n1. Tüm personaların ortak şikayetleri (öncelik sırasıyla)\n2. Sadece belirli personaların yaşadığı özel sorunlar\n3. En güçlü 2 pozitif bulgu\n4. Tasarım ekibine 3 öncelikli aksiyon önerisi\n\nKısa, net, aksiyon odaklı yaz.';
+      var sr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:sp}]})});
+      var sd=await sr.json();
+      var st=sd.content.map(function(b){return b.text||"";}).join("").trim();
+      summaryHtml='<div class="summary-card"><div class="summary-header"><div style="font-size:20px;">📊</div><div class="summary-title">Genel Özet</div><div class="summary-badge">'+results.length+' persona</div></div><div class="summary-content">'+st+'</div></div>';
+    }catch(e){}
+  }
+
+  hideSilentScreen();
+
+  var accHtml='';
+  results.forEach(function(r,idx){
+    if(r.error){accHtml+='<div class="acc-card"><div class="acc-header"><div class="acc-persona-icon">'+r.persona.icon+'</div><div class="acc-persona-name">'+r.persona.name+'</div><span style="font-size:12px;color:#e74c3c;">Hata oluştu</span></div></div>';}
+    else{accHtml+='<div class="acc-card"><div class="acc-header" onclick="toggleAcc('+idx+')"><div class="acc-persona-icon">'+r.persona.icon+'</div><div class="acc-persona-name">'+r.persona.name+'</div><div class="acc-stars">'+stars(r.ratings.genel)+'</div><span class="acc-toggle" id="acc-toggle-'+idx+'">▼</span></div><div class="acc-body" id="acc-body-'+idx+'"><div class="acc-content">'+r.text+'</div><div class="acc-rating-row"><div class="rating-item"><div class="rating-label">Genel</div><div class="rating-stars">'+stars(r.ratings.genel)+'</div></div><div class="rating-item"><div class="rating-label">Kullanım kolaylığı</div><div class="rating-stars">'+stars(r.ratings["kullanım_kolaylığı"])+'</div></div><div class="rating-item"><div class="rating-label">Güven</div><div class="rating-stars">'+stars(r.ratings.güven)+'</div></div><div class="rating-item"><div class="rating-label">Hız</div><div class="rating-stars">'+stars(r.ratings.hız)+'</div></div></div></div></div>';}
+  });
+
+  var finalHtml='<div class="results-actions"><button class="results-action-btn primary" onclick="window.print()">⬇ PDF indir</button><span class="new-test-link" onclick="resetTest()">+ Yeni test</span></div><div class="results-wrap">'+summaryHtml+accHtml+'</div>';
+  document.getElementById('resultContainer').innerHTML=finalHtml;
+  if(results.length===1)toggleAcc(0);
+
+  // Save history
+  saveToHistory({date:new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),scenario:scenario,personaNames:selected.map(function(p){return p.name;}),html:finalHtml});
+  updateHistoryCount();
+  btn.disabled=false;
+}
+
+function resetTest(){
+  document.getElementById('resultContainer').innerHTML='';
+  window.scrollTo(0,0);
+}
+
+/* History */
+function openHistoryDrawer() {
+  document.getElementById('drawerOverlay').className = 'history-drawer-overlay open';
+  document.getElementById('historyDrawer').className = 'history-drawer open';
+  renderDrawerHistory();
+}
+
+function closeHistoryDrawer() {
+  document.getElementById('drawerOverlay').className = 'history-drawer-overlay';
+  document.getElementById('historyDrawer').className = 'history-drawer';
+}
+
+function renderDrawerHistory() {
+  var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
+  var body = document.getElementById('drawerBody');
+  updateHistoryCount();
+  if (h.length === 0) { body.innerHTML = '<div class="drawer-empty">Henüz kaydedilmiş test yok.<br>Test yaptıktan sonra otomatik kaydedilir.</div>'; return; }
+  body.innerHTML = '<span class="drawer-clear" onclick="clearHistoryDrawer()">Geçmişi temizle</span>' +
+    h.map(function(item, i) {
+      return '<div class="drawer-item" onclick="loadFromDrawer(' + i + ')">' +
+        '<div class="drawer-item-header">' +
+        '<div class="drawer-item-title">' + (item.scenario || 'Test').substring(0, 55) + '</div>' +
+        '<div class="drawer-item-date">' + item.date + '</div>' +
+        '</div>' +
+        '<div class="drawer-item-chips">' + item.personaNames.map(function(n) { return '<span class="drawer-chip">' + n + '</span>'; }).join('') + '</div>' +
+        '</div>';
+    }).join('');
+}
+
+function loadFromDrawer(idx) {
+  var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
+  if (!h[idx]) return;
+  closeHistoryDrawer();
+  document.getElementById('resultContainer').innerHTML = h[idx].html;
+  document.getElementById('testSection').style.display = 'block';
+  setTimeout(function() { document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' }); }, 200);
+}
+
+function clearHistoryDrawer() {
+  if (!confirm('Tüm geçmiş silinsin mi?')) return;
+  localStorage.removeItem('ux_test_history');
+  renderDrawerHistory();
+  updateHistoryCount();
+}
+
+function updateHistoryCount() {
+  var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
+  document.getElementById('historyCount').textContent = h.length;
+}
+
+
+function toggleHistory(){
+  var p=document.getElementById('historyPanel');
+  if(p.classList.contains('show')){p.classList.remove('show');}
+  else{p.classList.add('show');renderHistory();}
+}
+
+function saveToHistory(item){
+  var h=JSON.parse(localStorage.getItem('ux_test_history')||'[]');
+  h.unshift(item);if(h.length>20)h=h.slice(0,20);
+  localStorage.setItem('ux_test_history',JSON.stringify(h));
+}
+
+function renderHistory(){
+  var h=JSON.parse(localStorage.getItem('ux_test_history')||'[]');
+  var el=document.getElementById('historyList');
+  if(h.length===0){el.innerHTML='<div class="history-empty">Henüz kaydedilmiş test yok.</div>';return;}
+  el.innerHTML=h.map(function(item,i){
+    return '<div class="history-item" onclick="loadHistory('+i+')">' +
+      '<div class="history-item-header"><span class="history-item-title">'+(item.scenario||'Test').substring(0,50)+'</span><span class="history-item-date">'+item.date+'</span></div>' +
+      '<div class="history-item-chips">'+item.personaNames.map(function(n){return '<span class="history-chip">'+n+'</span>';}).join('')+'</div></div>';
+  }).join('');
+}
+
+function loadHistory(idx){
+  var h=JSON.parse(localStorage.getItem('ux_test_history')||'[]');
+  if(!h[idx])return;
+  document.getElementById('resultContainer').innerHTML=h[idx].html;
+  document.getElementById('historyPanel').classList.remove('show');
+  document.getElementById('testSection').style.display='block';
+  setTimeout(function(){document.getElementById('resultContainer').scrollIntoView({behavior:'smooth'});},100);
+}
+
+function clearHistory(){
+  if(!confirm('Tüm geçmiş silinsin mi?'))return;
+  localStorage.removeItem('ux_test_history');
+  renderHistory();
+}
+
+function toggleHistoryDrawer() {
+  var drawer = document.getElementById('historyDrawer');
+  var overlay = document.getElementById('historyDrawerOverlay');
+  var isOpen = drawer.classList.contains('open');
+  if (isOpen) {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+  } else {
+    renderHistoryDrawer();
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+  }
+}
+
+function renderHistoryDrawer() {
+  var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
+  var el = document.getElementById('historyDrawerBody');
+  if (h.length === 0) {
+    el.innerHTML = '<div class="drawer-empty">Henüz kaydedilmiş test yok.<br>Test yaptıktan sonra otomatik kaydedilir.</div>';
+    return;
+  }
+  el.innerHTML = '<span class="drawer-clear" onclick="clearHistoryDrawer()">Geçmişi temizle</span>' +
+    h.map(function(item, i) {
+      return '<div class="drawer-item" onclick="loadHistoryFromDrawer(' + i + ')">' +
+        '<div class="drawer-item-header">' +
+        '<span class="drawer-item-title">' + (item.scenario || 'Test').substring(0, 55) + '</span>' +
+        '<span class="drawer-item-date">' + item.date + '</span>' +
+        '</div>' +
+        '<div class="drawer-item-chips">' + item.personaNames.map(function(n) { return '<span class="drawer-chip">' + n + '</span>'; }).join('') + '</div>' +
+        '</div>';
+    }).join('');
+}
+
+function loadHistoryFromDrawer(idx) {
+  var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
+  if (!h[idx]) return;
+  document.getElementById('resultContainer').innerHTML = h[idx].html;
+  document.getElementById('testSection').style.display = 'block';
+  toggleHistoryDrawer();
+  setTimeout(function() { document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' }); }, 100);
+}
+
+function clearHistoryDrawer() {
+  if (!confirm('Tüm geçmiş silinsin mi?')) return;
+  localStorage.removeItem('ux_test_history');
+  renderHistoryDrawer();
+}
+
+if(API_KEY!=="YOUR_API_KEY_HERE")document.getElementById('apiWarning').style.display='none';
+renderPersonas();
+updateHistoryCount();
+</script>
+</body>
+</html>
