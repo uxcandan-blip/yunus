@@ -1254,7 +1254,7 @@ async function callAPI(persona,scenario,flowDesc){
 }
 
 async function runTest(){
-  var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || localStorage.getItem('mp_api_key') || '');
+  ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || localStorage.getItem('mp_api_key') || '');
   if(!ACTIVE_KEY)return alert('API key eksik!');
   var selected=currentMode==='single' ? (singleSelected!==null?[personas.find(function(p){return p.id===singleSelected;})]:[]) : personas.filter(function(p){return multiSelected.indexOf(p.id)>-1;});
   if(selected.length===0)return alert('Lütfen bir persona seç.');
@@ -1462,11 +1462,9 @@ function clearHistoryDrawer() {
 
 // Auto-load key from landing page
 var savedKey = localStorage.getItem('mp_api_key');
-if (savedKey && API_KEY === "YOUR_API_KEY_HERE") {
-  // Inject key dynamically
-  window._dynamicKey = savedKey;
-}
-if(API_KEY!=="YOUR_API_KEY_HERE" || window._dynamicKey) document.getElementById('apiWarning').style.display='none';
+if (savedKey) { window._dynamicKey = savedKey; }
+var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || '');
+if(ACTIVE_KEY) document.getElementById('apiWarning').style.display='none';
 renderPersonas();
 updateHistoryCount();
 </script>
