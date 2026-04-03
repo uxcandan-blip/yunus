@@ -169,6 +169,7 @@ footer { padding: 2rem; text-align: center; font-size: 13px; color: var(--ink-gh
       <button class="pay-price-btn" onclick="selectPrice(this)">☕☕☕ $15</button>
     </div>
     <button class="pay-btn" onclick="onPayClick()">Kahve Ismarla & Devam Et ☕</button>
+    <button style="width:100%;padding:11px;background:none;border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;color:var(--ink-soft);margin-top:10px;transition:all 0.15s;" onmouseover="this.style.borderColor='#888'" onmouseout="this.style.borderColor='var(--border)'" onclick="onPayClick()">Şimdilik atla, devam et →</button>
     <p class="pay-note">Ödeme sonrası API key'ini girerek hemen kullanmaya başlayabilirsin.</p>
   </div>
 </div>
@@ -182,6 +183,7 @@ footer { padding: 2rem; text-align: center; font-size: 13px; color: var(--ink-gh
     <p>Şimdi Anthropic API key'ini gir ve kullanmaya başla. Key'in sadece tarayıcında çalışır, hiçbir sunucuya gönderilmez.</p>
     <input type="password" class="apikey-input" id="landingApiKey" placeholder="sk-ant-api03-...">
     <p class="apikey-help">API key'in yoksa <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>'dan ücretsiz alabilirsin. Aylık $5 kredi yeterli.</p>
+    <p style="font-size:12px;color:var(--ink-ghost);background:var(--surface-2);border-radius:8px;padding:10px 12px;margin-bottom:1.25rem;line-height:1.5;">⚠️ Şu an her kullanım öncesi API key'inizi girmeniz gerekiyor. Yakında hesap sistemiyle bu adım kalkacak.</p>
     <button class="apikey-btn" onclick="goToApp()">Kullanmaya Başla →</button>
   </div>
 </div>
@@ -191,6 +193,7 @@ footer { padding: 2rem; text-align: center; font-size: 13px; color: var(--ink-gh
   <a href="#" class="nav-logo">my<span>Personas</span></a>
   <ul class="nav-links">
     <li><a href="#how-it-works">Nasıl çalışır</a></li>
+    <li><a href="sss.html">S.S.S.</a></li>
     <li><a href="#plans">Planlar</a></li>
     <li><a href="#contact">İletişim</a></li>
     <li><a onclick="openPayModal()" class="nav-cta" style="cursor:pointer;">Ücretsiz Dene</a></li>
@@ -206,10 +209,10 @@ footer { padding: 2rem; text-align: center; font-size: 13px; color: var(--ink-gh
     <div class="bg-orb bg-orb-3"></div>
   </div>
   <div class="floating-cards">
-    <div class="float-card float-card-1"><div class="float-card-icon">🏠</div><div><div class="float-card-name">Ayşe Demir</div><div class="float-card-role">Bireysel satıcı</div></div><div class="float-card-score">★★★★☆</div></div>
-    <div class="float-card float-card-2"><div class="float-card-icon">🔍</div><div><div class="float-card-name">Fatma Yılmaz</div><div class="float-card-role">Son kullanıcı</div></div><div class="float-card-score">★★★☆☆</div></div>
-    <div class="float-card float-card-3"><div class="float-card-icon">🏢</div><div><div class="float-card-name">Mehmet Aydın</div><div class="float-card-role">Emlak ofisi</div></div><div class="float-card-score">★★★★★</div></div>
-    <div class="float-card float-card-4"><div class="float-card-icon">😅</div><div><div class="float-card-name">Naim Çelik</div><div class="float-card-role">Serbest emlakçı</div></div><div class="float-card-score">★★☆☆☆</div></div>
+    <div class="float-card float-card-1"><div class="float-card-icon">👩‍💼</div><div><div class="float-card-name" id="fc1name">Sara Mitchell</div><div class="float-card-role" id="fc1role">E-ticaret yöneticisi</div></div><div class="float-card-score" id="fc1stars">★★★★☆</div></div>
+    <div class="float-card float-card-2"><div class="float-card-icon">👴</div><div><div class="float-card-name" id="fc2name">Hasan Çevik</div><div class="float-card-role" id="fc2role">Banka müşterisi</div></div><div class="float-card-score" id="fc2stars">★★☆☆☆</div></div>
+    <div class="float-card float-card-3"><div class="float-card-icon">🧑‍💻</div><div><div class="float-card-name" id="fc3name">Alex Turner</div><div class="float-card-role" id="fc3role">SaaS kullanıcısı</div></div><div class="float-card-score" id="fc3stars">★★★★★</div></div>
+    <div class="float-card float-card-4"><div class="float-card-icon">👩</div><div><div class="float-card-name" id="fc4name">Zeynep Arslan</div><div class="float-card-role" id="fc4role">Sağlık app kullanıcısı</div></div><div class="float-card-score" id="fc4stars">★★★☆☆</div></div>
   </div>
   <div class="hero-inner">
     <div class="hero-badge">✦ AI destekli UX araştırması</div>
@@ -327,7 +330,7 @@ function goToApp() {
   if (!key) { alert('Lütfen API key\'ini gir.'); return; }
   if (!key.startsWith('sk-ant-')) { alert('Geçersiz API key. sk-ant- ile başlamalı.'); return; }
   localStorage.setItem('mp_api_key', key);
-  window.location.href = 'app.html';
+  window.open('app.html', '_blank');
 }
 
 // Close on overlay click
@@ -338,7 +341,38 @@ document.getElementById('apikeyOverlay').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('open');
 });
 
-// Scroll reveal
+// Dynamic floating cards
+var floatPersonas = [
+  { icon:'👩‍💼', name:'Sara Mitchell', role:'E-ticaret yöneticisi', stars:'★★★★☆' },
+  { icon:'👴', name:'Hasan Çevik', role:'Banka müşterisi', stars:'★★☆☆☆' },
+  { icon:'🧑‍💻', name:'Alex Turner', role:'SaaS kullanıcısı', stars:'★★★★★' },
+  { icon:'👩', name:'Zeynep Arslan', role:'Sağlık app kullanıcısı', stars:'★★★☆☆' },
+  { icon:'👨‍🔧', name:'Murat Yıldız', role:'Saha teknisyeni', stars:'★★★★☆' },
+  { icon:'👵', name:'Fatma Hanım', role:'Online alışveriş yapan', stars:'★★☆☆☆' },
+  { icon:'🧔', name:'David Chen', role:'Fintech kullanıcısı', stars:'★★★★★' },
+  { icon:'👩‍🎓', name:'Elif Şahin', role:'Öğrenci portal kullanıcısı', stars:'★★★☆☆' },
+  { icon:'👨‍💼', name:'Kemal Avcı', role:'Sigorta müşterisi', stars:'★★★★☆' },
+  { icon:'🧑', name:'Priya Sharma', role:'Mobil uygulama kullanıcısı', stars:'★★★★☆' },
+];
+var fcIds = [1,2,3,4];
+function rotateFCards() {
+  var shuffled = floatPersonas.slice().sort(function(){return Math.random()-0.5;});
+  fcIds.forEach(function(n, i) {
+    var p = shuffled[i];
+    var el = document.querySelector('.float-card-' + n);
+    if (!el) return;
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.5s';
+    setTimeout(function() {
+      el.querySelector('.float-card-icon').textContent = p.icon;
+      el.querySelector('.float-card-name').textContent = p.name;
+      el.querySelector('.float-card-role').textContent = p.role;
+      el.querySelector('.float-card-score').textContent = p.stars;
+      el.style.opacity = '0.8';
+    }, 500);
+  });
+}
+setInterval(rotateFCards, 4000);
 var observer = new IntersectionObserver(function(entries) {
   entries.forEach(function(entry) {
     if (entry.isIntersecting) entry.target.classList.add('visible');

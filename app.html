@@ -1036,12 +1036,12 @@ let nextId = 10;
 const mSel = { tip:null, tech:null, yas:null, motiv:null };
 
 const personas = [
-  { id:0, icon:"🏢", name:"Mehmet Aydın", role:"Emlak ofisi sahibi", age:48, city:"İstanbul", tech:"Orta", motivation:"Sahibinden'e bağımlılıktan kurtulmak", pain:"Yüksek ilan maliyeti, toplu ilan yönetimi zorluğu", goal:"Çok sayıda ilan yönetmek, müşteriye hızlı ulaşmak", iconBg:"#E6F1FB", badge:"Profesyonel" },
-  { id:1, icon:"🚗", name:"Serkan Kaya", role:"Araç galerisi sahibi", age:39, city:"Ankara", tech:"Orta", motivation:"Daha fazla alıcıya ulaşmak", pain:"İlan güncelleme yükü, rakip görünürlüğü", goal:"Stok listelemek, araç detay sayfasını iyi göstermek", iconBg:"#EAF3DE", badge:"Profesyonel" },
-  { id:2, icon:"🏠", name:"Ayşe Demir", role:"Bireysel emlak ilanı veren", age:34, city:"İzmir", tech:"Temel", motivation:"Evini aracısız satmak", pain:"İlan oluşturma karmaşıklığı, güven sorunları", goal:"Hızlı, kolay ilan vermek", iconBg:"#FAEEDA", badge:"Bireysel" },
-  { id:3, icon:"🚙", name:"Burak Şahin", role:"Bireysel vasıta ilanı veren", age:27, city:"Bursa", tech:"İyi", motivation:"Aracını hızlı satmak", pain:"Sahte alıcılar, değer tespiti zorluğu", goal:"Hızlı ilan vermek, fiyat karşılaştırmak", iconBg:"#FAEEDA", badge:"Bireysel" },
-  { id:4, icon:"🔍", name:"Fatma Yılmaz", role:"Sadece ilan arayan", age:31, city:"İstanbul", tech:"İyi", motivation:"Doğru fiyata uygun ev/araç bulmak", pain:"Sahte ilanlar, eski ilanlar", goal:"Hızlı filtrelemek, güvenilir ilan görmek", iconBg:"#F1EFE8", badge:"Son kullanıcı" },
-  { id:5, icon:"😅", name:"Naim Çelik", role:"Her işe bakan serbest emlakçı", age:56, city:"Konya", tech:"Çok düşük", motivation:"İlanı bir yere koyup kurtulmak", pain:"Bilgisayarda kaybolup gidiyor, yanlış kategoriye ilan açıyor", goal:"Az adımla ilanı yayınlamak ve telefon almak", iconBg:"#F1EFE8", badge:"Bireysel" }
+  { id:0, icon:"👨‍💼", name:"Mehmet Aydın", role:"Emlak ofisi sahibi", age:48, city:"İstanbul", tech:"Orta", motivation:"Sahibinden'e bağımlılıktan kurtulmak", pain:"Yüksek ilan maliyeti, toplu ilan yönetimi zorluğu", goal:"Çok sayıda ilan yönetmek, müşteriye hızlı ulaşmak", iconBg:"#E6F1FB", badge:"Profesyonel" },
+  { id:1, icon:"🧔", name:"Serkan Kaya", role:"Araç galerisi sahibi", age:39, city:"Ankara", tech:"Orta", motivation:"Daha fazla alıcıya ulaşmak", pain:"İlan güncelleme yükü, rakip görünürlüğü", goal:"Stok listelemek, araç detay sayfasını iyi göstermek", iconBg:"#EAF3DE", badge:"Profesyonel" },
+  { id:2, icon:"👩", name:"Ayşe Demir", role:"Bireysel emlak ilanı veren", age:34, city:"İzmir", tech:"Temel", motivation:"Evini aracısız satmak", pain:"İlan oluşturma karmaşıklığı, güven sorunları", goal:"Hızlı, kolay ilan vermek", iconBg:"#FAEEDA", badge:"Bireysel" },
+  { id:3, icon:"👨", name:"Burak Şahin", role:"Bireysel vasıta ilanı veren", age:27, city:"Bursa", tech:"İyi", motivation:"Aracını hızlı satmak", pain:"Sahte alıcılar, değer tespiti zorluğu", goal:"Hızlı ilan vermek, fiyat karşılaştırmak", iconBg:"#FAEEDA", badge:"Bireysel" },
+  { id:4, icon:"👩‍💻", name:"Fatma Yılmaz", role:"Sadece ilan arayan", age:31, city:"İstanbul", tech:"İyi", motivation:"Doğru fiyata uygun ev/araç bulmak", pain:"Sahte ilanlar, eski ilanlar", goal:"Hızlı filtrelemek, güvenilir ilan görmek", iconBg:"#F1EFE8", badge:"Son kullanıcı" },
+  { id:5, icon:"👴", name:"Naim Çelik", role:"Her işe bakan serbest emlakçı", age:56, city:"Konya", tech:"Çok düşük", motivation:"İlanı bir yere koyup kurtulmak", pain:"Bilgisayarda kaybolup gidiyor, yanlış kategoriye ilan açıyor", goal:"Az adımla ilanı yayınlamak ve telefon almak", iconBg:"#F1EFE8", badge:"Bireysel" }
 ];
 
 /* Mode switch */
@@ -1173,8 +1173,9 @@ function savePersona(){
   var isim=document.getElementById('m_isim').value.trim(),rol=document.getElementById('m_rol').value.trim();
   if(!isim||!rol)return alert('En az isim ve rol alanlarını doldur.');
   var icons=["👤","👩","👨","🧑","👴","👵","🧔","👩‍💼","👨‍💼","🙋"],bgs=["#E6F1FB","#EAF3DE","#FAEEDA","#F1EFE8","#EEEDFE","#F0FFF4"];
+  var autoIcon = pickEmoji(document.getElementById('m_yas_val').value, rol, mSel.tech);
   if(editingId!==null){var p=personas.find(function(x){return x.id===editingId;});if(p){p.name=isim;p.role=rol;p.age=document.getElementById('m_yas_val').value||p.age;p.city=document.getElementById('m_sehir').value||p.city;p.motivation=document.getElementById('m_motivasyon').value||p.motivation;p.pain=document.getElementById('m_pain').value||p.pain;p.goal=document.getElementById('m_hedef').value||p.goal;}}
-  else{var newP={id:nextId++,preset:false,icon:icons[Math.floor(Math.random()*icons.length)],name:isim,role:rol,age:document.getElementById('m_yas_val').value||(mSel.yas||''),city:document.getElementById('m_sehir').value||'',tech:mSel.tech||'Orta',motivation:document.getElementById('m_motivasyon').value||'',pain:document.getElementById('m_pain').value||'',goal:document.getElementById('m_hedef').value||'',iconBg:bgs[Math.floor(Math.random()*bgs.length)],badge:mSel.tip||rol};personas.push(newP);if(currentMode==='single')singleSelected=newP.id;else multiSelected.push(newP.id);document.getElementById('testSection').style.display='block';}
+  else{var newP={id:nextId++,preset:false,icon:autoIcon,name:isim,role:rol,age:document.getElementById('m_yas_val').value||(mSel.yas||''),city:document.getElementById('m_sehir').value||'',tech:mSel.tech||'Orta',motivation:document.getElementById('m_motivasyon').value||'',pain:document.getElementById('m_pain').value||'',goal:document.getElementById('m_hedef').value||'',iconBg:bgs[Math.floor(Math.random()*bgs.length)],badge:mSel.tip||rol};personas.push(newP);if(currentMode==='single')singleSelected=newP.id;else multiSelected.push(newP.id);document.getElementById('testSection').style.display='block';}
   renderPersonas();closeModal();
 }
 
@@ -1291,7 +1292,17 @@ function closeLightbox() {
   document.getElementById('lightbox').className = 'lightbox-overlay';
 }
 
-function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
+function pickEmoji(age, role, tech) {
+  var a = parseInt(age) || 30;
+  var r = (role || '').toLowerCase();
+  var t = (tech || '').toLowerCase();
+  if (a >= 65) return '👴';
+  if (a >= 55) return r.includes('kadın') || r.includes('anne') ? '👵' : '👴';
+  if (a >= 45) return r.includes('müdür') || r.includes('yönetici') || r.includes('ofis') ? '👨‍💼' : '🧔';
+  if (a >= 35) return r.includes('kadın') || r.includes('anne') || r.includes('satıcı') && Math.random() > 0.5 ? '👩‍💼' : '👨‍💼';
+  if (a >= 28) return t.includes('iyi') || t.includes('yüksek') ? '🧑‍💻' : '🙋';
+  return Math.random() > 0.5 ? '👨' : '👩';
+}n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
 function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=document.getElementById('acc-toggle-'+id);if(body.classList.contains('open')){body.classList.remove('open');toggle.classList.remove('open');}else{body.classList.add('open');toggle.classList.add('open');}}
 
 async function callAPI(persona,scenario,flowDesc){
@@ -1433,7 +1444,7 @@ function resetTest(){
 function openHistoryDrawer() {
   document.getElementById('drawerOverlay').className = 'history-drawer-overlay open';
   document.getElementById('historyDrawer').className = 'history-drawer open';
-  renderDrawerHistory();
+  renderHistoryDrawer();
 }
 
 function closeHistoryDrawer() {
@@ -1534,14 +1545,16 @@ function toggleHistoryDrawer() {
 
 function renderHistoryDrawer() {
   var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
-  var el = document.getElementById('historyDrawerBody');
+  var el = document.getElementById('historyDrawerBody') || document.getElementById('drawerBody');
+  if (!el) return;
   if (h.length === 0) {
     el.innerHTML = '<div class="drawer-empty">Henüz kaydedilmiş test yok.<br>Test yaptıktan sonra otomatik kaydedilir.</div>';
+    updateHistoryCount();
     return;
   }
-  el.innerHTML = '<span class="drawer-clear" onclick="clearHistoryDrawer()">Geçmişi temizle</span>' +
+  el.innerHTML = '<span class="drawer-clear" onclick="doClearHistory()">Geçmişi temizle</span>' +
     h.map(function(item, i) {
-      return '<div class="drawer-item" onclick="loadHistoryFromDrawer(' + i + ')">' +
+      return '<div class="drawer-item" onclick="loadHistoryItem(' + i + ')">' +
         '<div class="drawer-item-header">' +
         '<span class="drawer-item-title">' + (item.scenario || 'Test').substring(0, 55) + '</span>' +
         '<span class="drawer-item-date">' + item.date + '</span>' +
@@ -1549,22 +1562,31 @@ function renderHistoryDrawer() {
         '<div class="drawer-item-chips">' + item.personaNames.map(function(n) { return '<span class="drawer-chip">' + n + '</span>'; }).join('') + '</div>' +
         '</div>';
     }).join('');
+  updateHistoryCount();
 }
 
-function loadHistoryFromDrawer(idx) {
+function loadHistoryItem(idx) {
   var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
   if (!h[idx]) return;
+  closeHistoryDrawer();
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('resultSection').style.display = 'block';
   document.getElementById('resultContainer').innerHTML = h[idx].html;
-  document.getElementById('testSection').style.display = 'block';
-  toggleHistoryDrawer();
-  setTimeout(function() { document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' }); }, 100);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function clearHistoryDrawer() {
+function doClearHistory() {
   if (!confirm('Tüm geçmiş silinsin mi?')) return;
   localStorage.removeItem('ux_test_history');
   renderHistoryDrawer();
+  updateHistoryCount();
 }
+
+function clearHistoryDrawer() { doClearHistory(); }
+function clearHistory() { doClearHistory(); }
+function loadFromDrawer(idx) { loadHistoryItem(idx); }
+function loadHistoryFromDrawer(idx) { loadHistoryItem(idx); }
+function renderDrawerHistory() { renderHistoryDrawer(); }
 
 // Auto-load key from landing page
 var savedKey = localStorage.getItem('mp_api_key');
