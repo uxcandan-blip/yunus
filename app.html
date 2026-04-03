@@ -1301,6 +1301,8 @@ function setInlineKey(val) {
   document.getElementById('apiWarning').style.display = 'none';
 }
 
+function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
+
 function pickEmoji(age, role, tech) {
   var a = parseInt(age) || 30;
   var r = (role || '').toLowerCase();
@@ -1311,7 +1313,8 @@ function pickEmoji(age, role, tech) {
   if (a >= 35) return r.includes('kadın') || r.includes('anne') || r.includes('satıcı') && Math.random() > 0.5 ? '👩‍💼' : '👨‍💼';
   if (a >= 28) return t.includes('iyi') || t.includes('yüksek') ? '🧑‍💻' : '🙋';
   return Math.random() > 0.5 ? '👨' : '👩';
-}n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
+}
+function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
 function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=document.getElementById('acc-toggle-'+id);if(body.classList.contains('open')){body.classList.remove('open');toggle.classList.remove('open');}else{body.classList.add('open');toggle.classList.add('open');}}
 
 async function callAPI(persona,scenario,flowDesc){
