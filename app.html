@@ -896,70 +896,92 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
   </div>
 </div>
 
-<!-- PERSONA MODAL -->
+<!-- PERSONA MODAL — 2 ADIMLI -->
 <div class="modal-overlay" id="personaModal" onclick="closeModalOnOverlay(event)">
   <div class="modal">
+
+    <!-- ADIM GÖSTERGESİ -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.5rem;">
+      <div id="stepDot1" style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+      <div style="flex:1;height:2px;background:var(--border);border-radius:2px;overflow:hidden;"><div id="stepLine" style="height:100%;width:0%;background:var(--accent);transition:width 0.3s;"></div></div>
+      <div id="stepDot2" style="width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--ink-ghost);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+    </div>
+
     <h2 id="modalTitle">Yeni persona oluştur</h2>
-    <p class="modal-sub" id="modalSub">Chiplerle tanımla veya manuel doldur.</p>
-    <div class="modal-field">
-      <span class="modal-label">Kullanıcı tipi</span>
-      <div class="chip-group" id="m_tipGroup">
-        <div class="chip" onclick="mSelect('tip','Son kullanıcı',this)">👤 Son kullanıcı</div>
-        <div class="chip" onclick="mSelect('tip','Profesyonel / İş kullanıcısı',this)">💼 Profesyonel</div>
-        <div class="chip" onclick="mSelect('tip','Yönetici / Karar verici',this)">🎯 Yönetici</div>
+    <p class="modal-sub" id="modalSub">1— Personanızı hızlı chiplerle tanımlayın</p>
+
+    <!-- ADIM 1: CHİPLER -->
+    <div id="modalStep1">
+      <div class="modal-field">
+        <span class="modal-label">Kullanıcı tipi</span>
+        <div class="chip-group" id="m_tipGroup">
+          <div class="chip" onclick="mSelect('tip','Son kullanıcı',this)">👤 Son kullanıcı</div>
+          <div class="chip" onclick="mSelect('tip','Profesyonel / İş kullanıcısı',this)">💼 Profesyonel</div>
+          <div class="chip" onclick="mSelect('tip','Yönetici / Karar verici',this)">🎯 Yönetici</div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Teknoloji seviyesi</span>
+        <div class="chip-group" id="m_techGroup">
+          <div class="chip" onclick="mSelect('tech','Çok düşük',this)">😰 Çok düşük</div>
+          <div class="chip" onclick="mSelect('tech','Orta',this)">🙂 Orta</div>
+          <div class="chip" onclick="mSelect('tech','İyi',this)">😎 İyi</div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Yaş aralığı</span>
+        <div class="chip-group" id="m_yasGroup">
+          <div class="chip" onclick="mSelect('yas','18-28',this)">18–28</div>
+          <div class="chip" onclick="mSelect('yas','29-40',this)">29–40</div>
+          <div class="chip" onclick="mSelect('yas','41-55',this)">41–55</div>
+          <div class="chip" onclick="mSelect('yas','55+',this)">55+</div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Motivasyon eğilimi</span>
+        <div class="chip-group" id="m_motivGroup">
+          <div class="chip" onclick="mSelect('motiv','Hızlı sonuç istiyor',this)">⚡ Hız</div>
+          <div class="chip" onclick="mSelect('motiv','Güven arıyor',this)">🛡️ Güven</div>
+          <div class="chip" onclick="mSelect('motiv','Fiyat odaklı',this)">💰 Fiyat</div>
+          <div class="chip" onclick="mSelect('motiv','Detay odaklı',this)">🔍 Detay</div>
+        </div>
+      </div>
+      <div class="modal-field">
+        <span class="modal-label">Eklemek istediğin başka bir şey</span>
+        <textarea id="m_extra" style="min-height:60px;" placeholder="Örn: İlk kez kullanıyor, mobilde geziyor, acele ediyor..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeModal()">İptal</button>
+        <button class="modal-primary" onclick="goToStep2()">Devam →</button>
       </div>
     </div>
-    <div class="modal-field">
-      <span class="modal-label">Teknoloji seviyesi</span>
-      <div class="chip-group" id="m_techGroup">
-        <div class="chip" onclick="mSelect('tech','Çok düşük',this)">😰 Çok düşük</div>
-        <div class="chip" onclick="mSelect('tech','Orta',this)">🙂 Orta</div>
-        <div class="chip" onclick="mSelect('tech','İyi',this)">😎 İyi</div>
+
+    <!-- ADIM 2: DETAYLAR -->
+    <div id="modalStep2" style="display:none;">
+      <p class="modal-sub" style="margin-top:-0.5rem;">2— Persona bilgilerini gözden geçir, düzenle</p>
+      <div class="modal-generating" id="modalGenerating" style="margin-bottom:1rem;"><span class="dot"></span><span class="dot"></span><span class="dot"></span> <span id="generatingText">AI persona oluşturuyor...</span></div>
+      <div id="step2Fields">
+        <div class="modal-field"><span class="modal-label">İsim</span><input type="text" id="m_isim" placeholder="Örn: Ayşe Kaya"></div>
+        <div class="modal-field"><span class="modal-label">Rol / Meslek</span><input type="text" id="m_rol" placeholder="Örn: Freelance tasarımcı"></div>
+        <div class="modal-field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><span class="modal-label">Yaş</span><input type="text" id="m_yas_val" placeholder="Örn: 34"></div>
+          <div><span class="modal-label">Şehir</span><input type="text" id="m_sehir" placeholder="Örn: İzmir"></div>
+        </div>
+        <div class="modal-field"><span class="modal-label">Motivasyon</span><textarea id="m_motivasyon" style="min-height:55px;" placeholder="Bu kullanıcıyı ne motive ediyor?"></textarea></div>
+        <div class="modal-field"><span class="modal-label">Acı noktaları</span><textarea id="m_pain" style="min-height:55px;" placeholder="Ne tür zorluklarla karşılaşıyor?"></textarea></div>
+        <div class="modal-field"><span class="modal-label">Hedef</span><textarea id="m_hedef" style="min-height:55px;" placeholder="Bu kullanıcının temel hedefi ne?"></textarea></div>
+      </div>
+      <div class="modal-actions" style="margin-top:1.25rem;">
+        <button class="modal-cancel" onclick="goToStep1()">← Geri</button>
+        <div style="display:flex;gap:8px;flex:2;">
+          <button id="modalDeleteBtn" style="display:none;padding:11px 16px;border-radius:12px;border:1.5px solid #fca5a5;background:#fff5f5;color:#dc2626;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;" onclick="deleteEditingPersona()">🗑 Sil</button>
+          <button class="modal-primary" style="flex:1;" id="modalSaveBtn" onclick="savePersona()">Personamı Oluştur</button>
+        </div>
       </div>
     </div>
-    <div class="modal-field">
-      <span class="modal-label">Yaş aralığı</span>
-      <div class="chip-group" id="m_yasGroup">
-        <div class="chip" onclick="mSelect('yas','18-28',this)">18–28</div>
-        <div class="chip" onclick="mSelect('yas','29-40',this)">29–40</div>
-        <div class="chip" onclick="mSelect('yas','41-55',this)">41–55</div>
-        <div class="chip" onclick="mSelect('yas','55+',this)">55+</div>
-      </div>
-    </div>
-    <div class="modal-field">
-      <span class="modal-label">Motivasyon eğilimi</span>
-      <div class="chip-group" id="m_motivGroup">
-        <div class="chip" onclick="mSelect('motiv','Hızlı sonuç istiyor',this)">⚡ Hız</div>
-        <div class="chip" onclick="mSelect('motiv','Güven arıyor',this)">🛡️ Güven</div>
-        <div class="chip" onclick="mSelect('motiv','Fiyat odaklı',this)">💰 Fiyat</div>
-        <div class="chip" onclick="mSelect('motiv','Detay odaklı',this)">🔍 Detay</div>
-      </div>
-    </div>
-    <div class="modal-field">
-      <span class="modal-label">Eklemek istediğin başka bir şey</span>
-      <textarea id="m_extra" style="min-height:65px;" placeholder="Örn: İlk kez kullanıyor, mobilde geziyor, acele ediyor..."></textarea>
-    </div>
-    <div class="modal-generating" id="modalGenerating"><span class="dot"></span><span class="dot"></span><span class="dot"></span> <span id="generatingText">İşleniyor...</span></div>
-    <hr class="modal-divider">
-    <div class="modal-section-title">Manuel düzenle</div>
-    <div class="modal-field"><span class="modal-label">İsim</span><input type="text" id="m_isim" placeholder="Örn: Ayşe Kaya"></div>
-    <div class="modal-field"><span class="modal-label">Rol / Meslek</span><input type="text" id="m_rol" placeholder="Örn: Freelance tasarımcı"></div>
-    <div class="modal-field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div><span class="modal-label">Yaş</span><input type="text" id="m_yas_val" placeholder="Örn: 34"></div>
-      <div><span class="modal-label">Şehir</span><input type="text" id="m_sehir" placeholder="Örn: İzmir"></div>
-    </div>
-    <div class="modal-field"><span class="modal-label">Motivasyon</span><textarea id="m_motivasyon" style="min-height:55px;" placeholder="Bu kullanıcıyı ne motive ediyor?"></textarea></div>
-    <div class="modal-field"><span class="modal-label">Acı noktaları</span><textarea id="m_pain" style="min-height:55px;" placeholder="Ne tür zorluklarla karşılaşıyor?"></textarea></div>
-    <div class="modal-field"><span class="modal-label">Hedef</span><textarea id="m_hedef" style="min-height:55px;" placeholder="Bu kullanıcının temel hedefi ne?"></textarea></div>
-    <button class="ai-regen-btn" onclick="regenFromChips()">✦ Chiplerden yeniden oluştur</button>
-    <div class="modal-actions">
-      <button class="modal-cancel" onclick="closeModal()">İptal</button>
-      <button class="modal-primary" id="modalSaveBtn" onclick="savePersona()">Kaydet</button>
-    </div>
+
   </div>
 </div>
-
-<div class="container">
   <!-- HEADER -->
   <div class="app-header">
     <a href="index.html" style="text-decoration:none;">
@@ -1131,22 +1153,98 @@ function resetModal() {
   ['m_extra','m_isim','m_rol','m_yas_val','m_sehir','m_motivasyon','m_pain','m_hedef'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('modalGenerating').style.display='none';
   document.getElementById('modalSaveBtn').disabled=false;
+  document.getElementById('modalSaveBtn').textContent='Personamı Oluştur';
+  goToStep1(true);
 }
 
-function openAdd(){editingId=null;resetModal();document.getElementById('modalTitle').textContent='Yeni persona oluştur';document.getElementById('modalSub').textContent='Chiplerle tanımla veya manuel doldur.';document.getElementById('personaModal').className='modal-overlay open';}
+function goToStep1(noAnim) {
+  document.getElementById('modalStep1').style.display='block';
+  document.getElementById('modalStep2').style.display='none';
+  document.getElementById('stepDot1').style.background='var(--accent)';
+  document.getElementById('stepDot1').style.color='#fff';
+  document.getElementById('stepDot2').style.background='var(--border)';
+  document.getElementById('stepDot2').style.color='var(--ink-ghost)';
+  document.getElementById('stepLine').style.width='0%';
+  document.getElementById('modalSub').textContent = editingId !== null ? '1— Chiplerle güncelleyin' : '1— Personanızı hızlı chiplerle tanımlayın';
+}
 
-function openEdit(e,id){
+async function goToStep2() {
+  // Adım 2'ye geç, AI çağır
+  document.getElementById('modalStep1').style.display='none';
+  document.getElementById('modalStep2').style.display='block';
+  document.getElementById('stepDot2').style.background='var(--accent)';
+  document.getElementById('stepDot2').style.color='#fff';
+  document.getElementById('stepLine').style.width='100%';
+  document.getElementById('modalSub').textContent='2— Persona bilgilerini gözden geçir, düzenle';
+
+  // Eğer edit modundaysa ve alanlar doluysa AI'ı çağırma
+  var hasContent = document.getElementById('m_isim').value.trim();
+  if (!hasContent && (mSel.tip || mSel.tech || mSel.yas)) {
+    document.getElementById('modalGenerating').style.display='block';
+    var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (localStorage.getItem('mp_api_key') || '');
+    if (ACTIVE_KEY) {
+      await generateFromChips(ACTIVE_KEY);
+    }
+    document.getElementById('modalGenerating').style.display='none';
+  }
+}
+
+function openAdd() {
+  editingId=null;
+  resetModal();
+  document.getElementById('modalTitle').textContent='Yeni persona oluştur';
+  document.getElementById('modalDeleteBtn').style.display='none';
+  document.getElementById('modalSaveBtn').textContent='Personamı Oluştur';
+  document.getElementById('personaModal').className='modal-overlay open';
+}
+
+function openEdit(e, id) {
   e.stopPropagation();
-  var p=personas.find(function(x){return x.id===id;});if(!p)return;
-  editingId=id;resetModal();
+  var p=personas.find(function(x){return x.id===id;});
+  if(!p)return;
+  editingId=id;
+  resetModal();
   document.getElementById('modalTitle').textContent=p.name+' — düzenle';
-  document.getElementById('modalSub').textContent='Chipleri güncelleyip yeniden oluşturabilir veya direkt düzenleyebilirsin.';
-  document.getElementById('m_isim').value=p.name||'';document.getElementById('m_rol').value=p.role||'';document.getElementById('m_yas_val').value=p.age||'';document.getElementById('m_sehir').value=p.city||'';document.getElementById('m_motivasyon').value=p.motivation||'';document.getElementById('m_pain').value=p.pain||'';document.getElementById('m_hedef').value=p.goal||'';
+  document.getElementById('modalDeleteBtn').style.display='inline-flex';
+  document.getElementById('modalSaveBtn').textContent='Değişiklikleri Kaydet';
+
+  // Adım 2'yi doldur ve direkt aç
+  document.getElementById('m_isim').value=p.name||'';
+  document.getElementById('m_rol').value=p.role||'';
+  document.getElementById('m_yas_val').value=p.age||'';
+  document.getElementById('m_sehir').value=p.city||'';
+  document.getElementById('m_motivasyon').value=p.motivation||'';
+  document.getElementById('m_pain').value=p.pain||'';
+  document.getElementById('m_hedef').value=p.goal||'';
+
+  // Chipleri işaretle
   var techVal=(p.tech==='Temel')?'Orta':p.tech;
   document.querySelectorAll('#m_techGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m&&m[1]===techVal){c.classList.add('active');mSel.tech=techVal;}});
   document.querySelectorAll('#m_tipGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m&&p.badge&&m[1].indexOf(p.badge)>-1){c.classList.add('active');mSel.tip=m[1];}});
-  document.querySelectorAll('#m_yasGroup .chip').forEach(function(c){var m=c.getAttribute('onclick').match(/'([^']+)'\s*,this/);if(m){var age=parseInt(p.age);if((m[1]==='18-28'&&age>=18&&age<=28)||(m[1]==='29-40'&&age>=29&&age<=40)||(m[1]==='41-55'&&age>=41&&age<=55)||(m[1]==='55+'&&age>55)){c.classList.add('active');mSel.yas=m[1];}}});
+
+  // Edit modunda direkt adım 2'ye git
+  document.getElementById('modalStep1').style.display='none';
+  document.getElementById('modalStep2').style.display='block';
+  document.getElementById('stepDot2').style.background='var(--accent)';
+  document.getElementById('stepDot2').style.color='#fff';
+  document.getElementById('stepLine').style.width='100%';
+  document.getElementById('modalSub').textContent='Persona bilgilerini düzenle';
   document.getElementById('personaModal').className='modal-overlay open';
+}
+
+function deleteEditingPersona() {
+  if (editingId === null) return;
+  var p = personas.find(function(x){return x.id===editingId;});
+  var name = p ? p.name : 'bu persona';
+  if (!confirm(name + ' silinsin mi? Bu işlem geri alınamaz.')) return;
+  var idx = personas.findIndex(function(x){return x.id===editingId;});
+  if (idx > -1) personas.splice(idx, 1);
+  if (singleSelected === editingId) singleSelected = null;
+  multiSelected = multiSelected.filter(function(x){return x !== editingId;});
+  var hasAny = currentMode==='single' ? singleSelected!==null : multiSelected.length>0;
+  document.getElementById('testSection').style.display = hasAny ? 'block' : 'none';
+  closeModal();
+  renderPersonas();
 }
 
 function closeModal(){document.getElementById('personaModal').className='modal-overlay';editingId=null;resetModal();}
