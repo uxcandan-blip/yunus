@@ -330,7 +330,7 @@ function goToApp() {
   if (!key) { alert('Lütfen API key\'ini gir.'); return; }
   if (!key.startsWith('sk-ant-')) { alert('Geçersiz API key. sk-ant- ile başlamalı.'); return; }
   localStorage.setItem('mp_api_key', key);
-  window.open('app.html', '_blank');
+  window.location.href = 'app.html';
 }
 
 // Close on overlay click
