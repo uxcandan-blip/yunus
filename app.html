@@ -40,31 +40,32 @@ body {
 }
 
 /* Header */
-.app-header { margin-bottom: 3rem; }
-.app-logo { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.app-header { margin-bottom: 2.5rem; padding-top: 1rem; }
+.app-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .app-logo-mark {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--ink);
   letter-spacing: -0.03em;
 }
 .app-logo-tag {
   font-size: 11px;
-  font-weight: 500;
-  color: var(--ink-ghost);
+  font-weight: 600;
+  color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  border: 1px solid var(--border);
-  padding: 2px 8px;
+  border: 1px solid var(--accent-light);
+  background: var(--accent-light);
+  padding: 3px 10px;
   border-radius: 20px;
 }
 .subtitle {
   font-size: 15px;
   color: var(--ink-soft);
   font-weight: 300;
-  margin-bottom: 0;
   line-height: 1.5;
+  margin-top: 6px;
 }
 
 /* Mode tabs */
@@ -958,58 +959,67 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
   </div>
 </div>
 
-
-
-    <div class="app-logo">
-      <span class="app-logo-mark">myPersonas</span>
-      <span class="app-logo-tag">Beta</span>
-    </div>
-    <p class="subtitle">Ekranlarını gerçek kullanıcı gözünden test et</p>
+<div class="container">
+  <!-- HEADER -->
+  <div class="app-header">
+    <a href="index.html" style="text-decoration:none;">
+      <div class="app-logo">
+        <span class="app-logo-mark">my<span style="color:var(--accent)">Personas</span></span>
+        <span class="app-logo-tag">Beta</span>
+      </div>
+    </a>
+    <p class="subtitle" style="margin-top:10px;">Ekranlarını gerçek kullanıcı gözünden test et</p>
   </div>
 
   <div class="api-warning" id="apiWarning">⚠️ API key eksik. Dosyada <strong>YOUR_API_KEY_HERE</strong> yazan yeri kendi key'inle değiştir.</div>
 
-  <!-- Mode tabs -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" onclick="switchMode('single', this)">Tek kullanıcıyla test</button>
-    <button class="mode-tab" onclick="switchMode('multi', this)">Toplu test</button>
+  <!-- FORM SECTION — gizlenir test başlayınca -->
+  <div id="formSection">
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('single', this)">Tek kullanıcıyla test</button>
+      <button class="mode-tab" onclick="switchMode('multi', this)">Toplu test</button>
+    </div>
+
+    <div class="section-label" id="personaLabel">Persona seç</div>
+    <div class="persona-grid" id="personaGrid"></div>
+    <div class="select-row" id="selectRow" style="display:none;">
+      <button class="select-all-btn" onclick="toggleSelectAll()">Tümünü seç</button>
+      <span class="selected-count" id="selectedCount"></span>
+    </div>
+
+    <div id="testSection" style="display:none;">
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <div class="step-title">Test ekranlarını yükle</div>
+          <div class="step-badge" id="imgBadge" style="display:none;"></div>
+        </div>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imgInput').click()">
+          <input type="file" id="imgInput" accept="image/*" multiple onchange="handleImages(event)" style="display:none;">
+          <div style="font-size:26px;margin-bottom:6px;" id="uploadIcon">🖼️</div>
+          <div class="upload-text" id="uploadText">Ekran görüntüsü veya wireframe yükle<br><strong>Tıkla veya sürükle bırak</strong> · Birden fazla seçebilirsin</div>
+        </div>
+        <div class="field-error" id="imgError">⚠️ En az bir ekran görseli yüklemelisin.</div>
+        <div class="flow-list" id="flowList"></div>
+      </div>
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <div class="step-title">Test senaryosunu yaz</div>
+        </div>
+        <textarea id="screenDesc" style="min-height:130px;" placeholder="Aşağıdaki şablonu doldur:&#10;&#10;Test ettiğim ekran: (örn: İlan detay sayfası)&#10;Kullanıcı bu ekranda ne yapıyor: (örn: Satıcıyla iletişime geçmeye çalışıyor)&#10;Öğrenmek istediğim: (örn: İletişim butonu yeterince görünür mü, güven veriyor mu?)"></textarea>
+        <div class="field-error" id="scenarioError">⚠️ Test senaryosunu yazmadan devam edemezsin.</div>
+      </div>
+      <button class="run-btn" id="runBtn" onclick="runTest()">Testi başlat →</button>
+    </div>
   </div>
 
-  <!-- PERSONA SECTION -->
-  <div class="section-label" id="personaLabel">Persona seç</div>
-  <div class="persona-grid" id="personaGrid"></div>
-  <div class="select-row" id="selectRow" style="display:none;">
-    <button class="select-all-btn" onclick="toggleSelectAll()">Tümünü seç</button>
-    <span class="selected-count" id="selectedCount"></span>
-  </div>
-
-  <!-- TEST SECTION -->
-  <div id="testSection" style="display:none;">
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">1</div>
-        <div class="step-title">Test ekranlarını yükle</div>
-        <div class="step-badge" id="imgBadge" style="display:none;"></div>
-      </div>
-      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imgInput').click()">
-        <input type="file" id="imgInput" accept="image/*" multiple onchange="handleImages(event)" style="display:none;">
-        <div style="font-size:26px;margin-bottom:6px;" id="uploadIcon">🖼️</div>
-        <div class="upload-text" id="uploadText">Ekran görüntüsü veya wireframe yükle<br><strong>Tıkla veya sürükle bırak</strong> · Birden fazla seçebilirsin</div>
-      </div>
-      <div class="field-error" id="imgError">⚠️ En az bir ekran görseli yüklemelisin.</div>
-      <div class="flow-list" id="flowList"></div>
-    </div>
-    <div class="step">
-      <div class="step-header">
-        <div class="step-num">2</div>
-        <div class="step-title">Test senaryosunu yaz</div>
-      </div>
-      <textarea id="screenDesc" style="min-height:130px;" placeholder="Aşağıdaki şablonu doldur:&#10;&#10;Test ettiğim ekran: (örn: İlan detay sayfası)&#10;Kullanıcı bu ekranda ne yapıyor: (örn: Satıcıyla iletişime geçmeye çalışıyor)&#10;Öğrenmek istediğim: (örn: İletişim butonu yeterince görünür mü, güven veriyor mu?)"></textarea>
-      <div class="field-error" id="scenarioError">⚠️ Test senaryosunu yazmadan devam edemezsin.</div>
-    </div>
-    <button class="run-btn" id="runBtn" onclick="runTest()">Testi başlat →</button>
+  <!-- RESULT SECTION — sadece test bitince görünür -->
+  <div id="resultSection" style="display:none;">
     <div id="resultContainer"></div>
+  </div>
 
+</div>
 
   </div>
 </div>
@@ -1308,6 +1318,12 @@ async function runTest(){
 
   var btn=document.getElementById('runBtn');
   btn.disabled=true;
+
+  // Hide form, show results
+  document.getElementById('formSection').style.display='none';
+  document.getElementById('resultSection').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
   var flowDesc=flowItems.length>0?'\n\nEKRAN AKIŞI ('+flowItems.length+' ekran):\n'+flowItems.map(function(item,i){return (i+1)+'. '+(item.label||'Etiket yok');}).join('\n'):'';
 
   showSilentScreen(selected);
@@ -1402,6 +1418,8 @@ async function runTest(){
 
 function resetTest(){
   document.getElementById('resultContainer').innerHTML='';
+  document.getElementById('resultSection').style.display='none';
+  document.getElementById('formSection').style.display='block';
   document.getElementById('testSection').style.display='none';
   singleSelected=null;
   multiSelected=[];
