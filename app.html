@@ -1324,8 +1324,8 @@ async function callAPI(persona,scenario,flowDesc){
 }
 
 async function runTest(){
-  ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || localStorage.getItem('mp_api_key') || '');
-  if(!ACTIVE_KEY)return alert('API key eksik!');
+  ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (localStorage.getItem('mp_api_key') || '');
+  if(!ACTIVE_KEY)return alert('API key eksik! Anasayfadan tekrar giriş yapın.');
   var selected=currentMode==='single' ? (singleSelected!==null?[personas.find(function(p){return p.id===singleSelected;})]:[]) : personas.filter(function(p){return multiSelected.indexOf(p.id)>-1;});
   if(selected.length===0)return alert('Lütfen bir persona seç.');
   var hasErr=false;
@@ -1600,7 +1600,7 @@ function renderDrawerHistory() { renderHistoryDrawer(); }
 // Auto-load key from landing page
 var savedKey = localStorage.getItem('mp_api_key');
 if (savedKey) { window._dynamicKey = savedKey; }
-var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || '');
+var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (localStorage.getItem('mp_api_key') || '');
 if(ACTIVE_KEY) document.getElementById('apiWarning').style.display='none';
 renderPersonas();
 updateHistoryCount();
