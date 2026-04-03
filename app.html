@@ -1108,16 +1108,17 @@ function mSelect(key,value,el){mSel[key]=value;el.parentElement.querySelectorAll
 
 async function regenFromChips(){
   if(!mSel.tip&&!mSel.tech&&!mSel.yas)return alert('En az bir chip seç.');
-  if(API_KEY==="YOUR_API_KEY_HERE")return alert('API key eksik!');
+  var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || localStorage.getItem('mp_api_key') || '');
+  if(!ACTIVE_KEY)return alert('API key eksik!');
   document.getElementById('modalGenerating').style.display='block';document.getElementById('generatingText').textContent='Yeniden oluşturuluyor...';
-  await generateFromChips();
+  await generateFromChips(ACTIVE_KEY);
 }
 
-async function generateFromChips(){
+async function generateFromChips(ACTIVE_KEY){
   var extra=document.getElementById('m_extra').value.trim();
   var prompt='Bir UX test aracı için kısa bir kullanıcı personası oluştur.\n\nBilgiler:\n'+(mSel.tip?'- Kullanıcı tipi: '+mSel.tip+'\n':'')+(mSel.tech?'- Teknoloji seviyesi: '+mSel.tech+'\n':'')+(mSel.yas?'- Yaş aralığı: '+mSel.yas+'\n':'')+(mSel.motiv?'- Motivasyon eğilimi: '+mSel.motiv+'\n':'')+(extra?'- Ek bilgi: '+extra+'\n':'')+'\nSadece JSON formatında yanıt ver:\n{"isim":"...","sehir":"...","yas":XX,"rol":"...","motivasyon":"...","pain":"...","hedef":"..."}';
   try{
-    var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:prompt}]})});
+    var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:prompt}]})});
     var data=await res.json();
     var text=data.content.map(function(b){return b.text||"";}).join("").trim();
     var json=JSON.parse(text.replace(/```json|```/g,"").trim());
@@ -1246,14 +1247,15 @@ function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=d
 async function callAPI(persona,scenario,flowDesc){
   var textPrompt='Sen deneyimli bir UX araştırmacısısın.\n\nPLATFORM BAĞLAMI: Bu görseller Türkiye\'de faaliyet gösteren bir emlak ve vasıta ilan platformuna ait ekranlardır. Platform sahibinden.com\'a rakip olmayı hedeflemekte olup bireysel kullanıcıların ve profesyonel emlakçı/galericilerin ilan verdiği, alıcıların ise ilan arayıp satıcılarla iletişime geçtiği bir yapıya sahiptir.\n\nGÖREVİN: Önce görseldeki ekranı/ekranları analiz et — ne tür bir sayfa olduğunu, hangi UI elementlerin bulunduğunu, kullanıcının bu ekranda ne yapması gerektiğini anla. Ardından aşağıdaki persona kimliğine bürünerek birinci şahıs ağzından gerçekçi bir kullanıcı testi yorumu yaz.\n\nPERSONA:\n- Ad: '+persona.name+'\n- Rol: '+persona.role+(persona.city?'\n- Şehir: '+persona.city:'')+'\n- Yaş: '+persona.age+'\n- Teknoloji seviyesi: '+persona.tech+'\n- Motivasyon: '+persona.motivation+'\n- Acı noktaları: '+persona.pain+'\n- Hedef: '+persona.goal+'\n\nTEST SENARYOSU:\n'+scenario+flowDesc+'\n\nYORUM FORMATI — birinci şahıs, doğal ve gerçekçi:\n1. Bu ekranın ne olduğuna dair ilk izlenim\n2. Beğendiğin 2 şey (spesifik UI elementlerine referans ver)\n3. Sorun yaşadığın 2-3 şey (spesifik)\n'+(flowItems.length>1?'4. Akışta en çok zorlandığın adım\n':'')+  (flowItems.length>1?'5.':'4.')+' Değiştirilmesini istediğin 1 şey\n'+(flowItems.length>1?'6.':'5.')+' 10 üzerinden puan\n\nSonra tek satırda:\nRATINGS:{"genel":X,"kullanım_kolaylığı":X,"güven":X,"hız":X}\nX=1-5 tam sayı.';
   var userContent=flowItems.map(function(item){return {type:"image",source:{type:"base64",media_type:item.type,data:item.base64}};}).concat([{type:"text",text:textPrompt}]);
-  var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:userContent}]})});
+  var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:userContent}]})});
   var data=await res.json();
   if(data.error)throw new Error(data.error.message);
   return data.content.map(function(b){return b.text||"";}).join("");
 }
 
 async function runTest(){
-  if(API_KEY==="YOUR_API_KEY_HERE")return alert('API key eksik!');
+  var ACTIVE_KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (window._dynamicKey || localStorage.getItem('mp_api_key') || '');
+  if(!ACTIVE_KEY)return alert('API key eksik!');
   var selected=currentMode==='single' ? (singleSelected!==null?[personas.find(function(p){return p.id===singleSelected;})]:[]) : personas.filter(function(p){return multiSelected.indexOf(p.id)>-1;});
   if(selected.length===0)return alert('Lütfen bir persona seç.');
   var hasErr=false;
@@ -1291,7 +1293,7 @@ async function runTest(){
     document.getElementById('silentSubtitle').textContent='Genel özet hazırlanıyor...';
     try{
       var sp='Aşağıda '+results.length+' farklı kullanıcı personasının aynı UX testi için verdiği yorumlar var. Bu yorumları sentezleyerek kısa ve güçlü bir genel özet yaz.\n\n'+results.filter(function(r){return !r.error;}).map(function(r){return '--- '+r.persona.name+' ('+r.persona.role+') ---\n'+r.text;}).join('\n\n')+'\n\nÖzette şunları içersin:\n1. Tüm personaların ortak şikayetleri (öncelik sırasıyla)\n2. Sadece belirli personaların yaşadığı özel sorunlar\n3. En güçlü 2 pozitif bulgu\n4. Tasarım ekibine 3 öncelikli aksiyon önerisi\n\nKısa, net, aksiyon odaklı yaz.';
-      var sr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:sp}]})});
+      var sr=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,messages:[{role:"user",content:sp}]})});
       var sd=await sr.json();
       var st=sd.content.map(function(b){return b.text||"";}).join("").trim();
       summaryHtml='<div class="summary-card"><div class="summary-header"><div style="font-size:20px;">📊</div><div class="summary-title">Genel Özet</div><div class="summary-badge">'+results.length+' persona</div></div><div class="summary-content">'+st+'</div></div>';
@@ -1458,7 +1460,13 @@ function clearHistoryDrawer() {
   renderHistoryDrawer();
 }
 
-if(API_KEY!=="YOUR_API_KEY_HERE")document.getElementById('apiWarning').style.display='none';
+// Auto-load key from landing page
+var savedKey = localStorage.getItem('mp_api_key');
+if (savedKey && API_KEY === "YOUR_API_KEY_HERE") {
+  // Inject key dynamically
+  window._dynamicKey = savedKey;
+}
+if(API_KEY!=="YOUR_API_KEY_HERE" || window._dynamicKey) document.getElementById('apiWarning').style.display='none';
 renderPersonas();
 updateHistoryCount();
 </script>
