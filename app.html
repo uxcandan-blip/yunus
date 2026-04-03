@@ -15,7 +15,9 @@
   --surface-3: #efefec;
   --border: #e8e8e4;
   --border-strong: #c8c8c4;
-  --accent: #0f0f0f;
+  --accent: #6c47ff;
+  --accent-light: #ede9ff;
+  --accent-soft: #f5f3ff;
   --accent-green: #16a34a;
   --accent-green-bg: #f0fdf4;
   --radius: 16px;
@@ -425,47 +427,71 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
   letter-spacing: -0.01em;
   border-radius: var(--radius);
   border: none;
-  background: var(--ink);
+  background: var(--accent);
   color: #fff;
   cursor: pointer;
   transition: all 0.18s ease;
   margin-top: 0.5rem;
 }
-.run-btn:hover { background: #2a2a2a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.run-btn:hover { background: #5538e0; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,71,255,0.3); }
 .run-btn:active { transform: translateY(0); }
 .run-btn:disabled { background: var(--border-strong); cursor: not-allowed; transform: none; box-shadow: none; }
 
 /* Results */
-.results-wrap { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
-.results-actions { display: flex; gap: 8px; margin-bottom: 0.5rem; align-items: center; }
-.results-action-btn { font-size: 12px; font-weight: 500; padding: 7px 16px; border-radius: 10px; border: 1.5px solid var(--border-strong); background: var(--surface); cursor: pointer; color: var(--ink-soft); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
-.results-action-btn:hover { border-color: var(--ink); color: var(--ink); }
-.results-action-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
-.results-action-btn.primary:hover { background: #2a2a2a; }
-.new-test-link { font-size: 12px; color: var(--ink-soft); cursor: pointer; margin-left: auto; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
-.new-test-link:hover { color: var(--ink); }
+.results-wrap { margin-top: 0; display: flex; flex-direction: column; gap: 16px; }
+.results-actions { display: flex; gap: 8px; margin-bottom: 1rem; align-items: center; }
+.results-action-btn { font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; color: var(--ink-soft); transition: all 0.15s; font-family: 'Plus Jakarta Sans', sans-serif; }
+.results-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+.results-action-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.results-action-btn.primary:hover { background: #5538e0; }
+.new-test-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--surface); cursor: pointer; color: var(--ink-soft); transition: all 0.15s; font-family: 'Plus Jakarta Sans', sans-serif; margin-left: auto; }
+.new-test-btn:hover { border-color: var(--ink); color: var(--ink); }
 
-.summary-card { background: var(--ink); border-radius: var(--radius); overflow: hidden; }
-.summary-header { padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
-.summary-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.02em; }
-.summary-badge { font-size: 11px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); padding: 3px 10px; border-radius: 20px; margin-left: auto; font-weight: 500; }
-.summary-content { padding: 1.25rem 1.25rem; font-size: 14px; line-height: 1.85; color: rgba(255,255,255,0.75); white-space: pre-wrap; border-top: 1px solid rgba(255,255,255,0.08); font-weight: 300; }
+/* Tested screens strip */
+.tested-screens { background: var(--surface-2); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+.tested-screens-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 700; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+.tested-screens-list { display: flex; gap: 10px; flex-wrap: wrap; }
+.tested-thumb { position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid var(--border); transition: all 0.15s; flex-shrink: 0; }
+.tested-thumb:hover { border-color: var(--accent); transform: scale(1.03); }
+.tested-thumb img { width: 80px; height: 56px; object-fit: cover; display: block; }
+.tested-thumb-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-size: 9px; padding: 3px 5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.acc-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-.acc-header { padding: 14px 18px; background: var(--surface-2); display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; transition: background 0.12s; }
-.acc-header:hover { background: var(--surface-3); }
-.acc-persona-icon { font-size: 20px; }
-.acc-persona-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; flex: 1; letter-spacing: -0.02em; }
-.acc-stars { font-size: 14px; color: #d97706; }
+/* Summary card */
+.summary-card { background: var(--accent); border-radius: var(--radius); overflow: hidden; }
+.summary-header { padding: 18px 22px; display: flex; align-items: center; gap: 12px; }
+.summary-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+.summary-badge { font-size: 11px; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); padding: 3px 10px; border-radius: 20px; margin-left: auto; font-weight: 600; }
+.summary-content { padding: 1.5rem 1.5rem; font-size: 14px; line-height: 1.9; color: rgba(255,255,255,0.85); white-space: pre-wrap; border-top: 1px solid rgba(255,255,255,0.12); font-weight: 300; }
+
+/* Accordion result card */
+.acc-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.15s; }
+.acc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.acc-header { padding: 16px 20px; background: var(--surface-2); display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; transition: background 0.12s; }
+.acc-header:hover { background: var(--accent-soft); }
+.acc-persona-icon { font-size: 22px; }
+.acc-persona-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700; flex: 1; letter-spacing: -0.02em; }
+.acc-persona-role { font-size: 12px; color: var(--ink-soft); font-weight: 300; }
+.acc-stars { font-size: 15px; color: #d97706; }
 .acc-toggle { font-size: 11px; color: var(--ink-ghost); margin-left: 8px; transition: transform 0.2s; display: inline-block; }
 .acc-toggle.open { transform: rotate(180deg); }
 .acc-body { display: none; }
 .acc-body.open { display: block; }
-.acc-content { padding: 1.5rem 1.25rem; font-size: 14px; line-height: 1.85; color: var(--ink); white-space: pre-wrap; font-weight: 300; }
-.acc-rating-row { padding: 12px 18px; border-top: 1px solid var(--border); background: var(--surface-2); display: flex; gap: 24px; flex-wrap: wrap; }
-.rating-item { display: flex; flex-direction: column; gap: 3px; }
-.rating-label { font-size: 10px; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-.rating-stars { font-size: 13px; color: #d97706; }
+.acc-content { padding: 2rem 1.5rem; font-size: 14px; line-height: 1.9; color: var(--ink); font-weight: 300; }
+.acc-content-section { margin-bottom: 1.5rem; }
+.acc-content-section:last-child { margin-bottom: 0; }
+.acc-section-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 8px; }
+.acc-section-text { font-size: 14px; line-height: 1.8; color: var(--ink); font-weight: 300; white-space: pre-wrap; }
+.acc-rating-row { padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface-2); display: flex; gap: 28px; flex-wrap: wrap; }
+.rating-item { display: flex; flex-direction: column; gap: 4px; }
+.rating-label { font-size: 10px; color: var(--ink-ghost); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.rating-stars { font-size: 14px; color: #d97706; }
+
+/* Lightbox */
+.lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500; display: none; align-items: center; justify-content: center; padding: 2rem; cursor: zoom-out; }
+.lightbox-overlay.open { display: flex; }
+.lightbox-overlay img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+.lightbox-close { position: fixed; top: 20px; right: 24px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.lightbox-close:hover { background: rgba(255,255,255,0.2); }
 
 /* History */
 .history-panel { display: none; margin-top: 1rem; }
@@ -829,6 +855,12 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
 </head>
 <body>
 
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <!-- HISTORY BUTTON -->
 <button class="history-btn" onclick="openHistoryDrawer()">
   🕐 Geçmiş <span class="hb-count" id="historyCount">0</span>
@@ -1149,7 +1181,7 @@ function renderFlowList(){
   document.getElementById('imgError').className='field-error';
   if(flowItems.length===0){list.innerHTML='';badge.style.display='none';zone.className='upload-zone';document.getElementById('uploadIcon').textContent='🖼️';document.getElementById('uploadText').innerHTML='Ekran görüntüsü veya wireframe yükle<br><strong>Tıkla veya sürükle bırak</strong> · Birden fazla seçebilirsin';return;}
   badge.style.display='inline';badge.textContent=flowItems.length+' ekran';zone.className='upload-zone has-files';document.getElementById('uploadIcon').textContent='✅';document.getElementById('uploadText').innerHTML='<strong>'+flowItems.length+' ekran yüklendi</strong> · Daha fazla eklemek için tıkla';
-  list.innerHTML=flowItems.map(function(item,i){return '<div class="flow-item"><div class="flow-num">'+(i+1)+'</div><img class="flow-thumb" src="'+item.src+'"><input class="flow-label-input" type="text" placeholder="Bu ekran ne?" value="'+item.label+'" oninput="flowItems['+i+'].label=this.value"><div class="flow-actions">'+(i>0?'<button class="fab" onclick="moveItem('+i+',-1)">↑</button>':'')+(i<flowItems.length-1?'<button class="fab" onclick="moveItem('+i+',1)">↓</button>':'')+'<button class="fab del" onclick="removeItem('+i+')">✕</button></div></div>';}).join('');
+  list.innerHTML=flowItems.map(function(item,i){return '<div class="flow-item"><div class="flow-num">'+(i+1)+'</div><img class="flow-thumb" src="'+item.src+'" style="cursor:zoom-in;" onclick="openLightbox(\''+item.src+'\')"><input class="flow-label-input" type="text" placeholder="Bu ekran ne?" value="'+item.label+'" oninput="flowItems['+i+'].label=this.value"><div class="flow-actions">'+(i>0?'<button class="fab" onclick="moveItem('+i+',-1)">↑</button>':'')+(i<flowItems.length-1?'<button class="fab" onclick="moveItem('+i+',1)">↓</button>':'')+'<button class="fab del" onclick="removeItem('+i+')">✕</button></div></div>';}).join('');
 }
 function moveItem(i,dir){var j=i+dir;if(j<0||j>=flowItems.length)return;var t=flowItems[i];flowItems[i]=flowItems[j];flowItems[j]=t;renderFlowList();}
 function removeItem(i){flowItems.splice(i,1);renderFlowList();}
@@ -1241,6 +1273,14 @@ function hideSilentScreen(){
 }
 
 /* API */
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').className = 'lightbox-overlay open';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').className = 'lightbox-overlay';
+}
+
 function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
 function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=document.getElementById('acc-toggle-'+id);if(body.classList.contains('open')){body.classList.remove('open');toggle.classList.remove('open');}else{body.classList.add('open');toggle.classList.add('open');}}
 
@@ -1304,11 +1344,53 @@ async function runTest(){
 
   var accHtml='';
   results.forEach(function(r,idx){
-    if(r.error){accHtml+='<div class="acc-card"><div class="acc-header"><div class="acc-persona-icon">'+r.persona.icon+'</div><div class="acc-persona-name">'+r.persona.name+'</div><span style="font-size:12px;color:#e74c3c;">Hata oluştu</span></div></div>';}
-    else{accHtml+='<div class="acc-card"><div class="acc-header" onclick="toggleAcc('+idx+')"><div class="acc-persona-icon">'+r.persona.icon+'</div><div class="acc-persona-name">'+r.persona.name+'</div><div class="acc-stars">'+stars(r.ratings.genel)+'</div><span class="acc-toggle" id="acc-toggle-'+idx+'">▼</span></div><div class="acc-body" id="acc-body-'+idx+'"><div class="acc-content">'+r.text+'</div><div class="acc-rating-row"><div class="rating-item"><div class="rating-label">Genel</div><div class="rating-stars">'+stars(r.ratings.genel)+'</div></div><div class="rating-item"><div class="rating-label">Kullanım kolaylığı</div><div class="rating-stars">'+stars(r.ratings["kullanım_kolaylığı"])+'</div></div><div class="rating-item"><div class="rating-label">Güven</div><div class="rating-stars">'+stars(r.ratings.güven)+'</div></div><div class="rating-item"><div class="rating-label">Hız</div><div class="rating-stars">'+stars(r.ratings.hız)+'</div></div></div></div></div>';}
+    if(r.error){
+      accHtml+='<div class="acc-card"><div class="acc-header"><div class="acc-persona-icon">'+r.persona.icon+'</div><div class="acc-persona-name">'+r.persona.name+'</div><span style="font-size:12px;color:#e74c3c;">Hata oluştu</span></div></div>';
+    } else {
+      accHtml+='<div class="acc-card">' +
+        '<div class="acc-header" onclick="toggleAcc('+idx+')">' +
+          '<div class="acc-persona-icon">'+r.persona.icon+'</div>' +
+          '<div><div class="acc-persona-name">'+r.persona.name+'</div><div class="acc-persona-role">'+r.persona.role+'</div></div>' +
+          '<div class="acc-stars">'+stars(r.ratings.genel)+'</div>' +
+          '<span class="acc-toggle" id="acc-toggle-'+idx+'">▼</span>' +
+        '</div>' +
+        '<div class="acc-body" id="acc-body-'+idx+'">' +
+          '<div class="acc-content"><div class="acc-section-text">'+r.text+'</div></div>' +
+          '<div class="acc-rating-row">' +
+            '<div class="rating-item"><div class="rating-label">Genel</div><div class="rating-stars">'+stars(r.ratings.genel)+'</div></div>' +
+            '<div class="rating-item"><div class="rating-label">Kullanım kolaylığı</div><div class="rating-stars">'+stars(r.ratings["kullanım_kolaylığı"])+'</div></div>' +
+            '<div class="rating-item"><div class="rating-label">Güven</div><div class="rating-stars">'+stars(r.ratings.güven)+'</div></div>' +
+            '<div class="rating-item"><div class="rating-label">Hız</div><div class="rating-stars">'+stars(r.ratings.hız)+'</div></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
   });
 
-  var finalHtml='<div class="results-actions"><button class="results-action-btn primary" onclick="window.print()">⬇ PDF indir</button><span class="new-test-link" onclick="resetTest()">+ Yeni test</span></div><div class="results-wrap">'+summaryHtml+accHtml+'</div>';
+  // Tested screens strip
+  var screensHtml = '';
+  if (flowItems.length > 0) {
+    screensHtml = '<div class="tested-screens">' +
+      '<div class="tested-screens-label">Test edilen ekranlar</div>' +
+      '<div class="tested-screens-list">' +
+      flowItems.map(function(item) {
+        var safeLabel = (item.label || 'Ekran').replace(/'/g, "\\'");
+        return '<div class="tested-thumb" onclick="openLightbox(\'' + item.src + '\')">' +
+          '<img src="' + item.src + '" alt="">' +
+          '<div class="tested-thumb-label">' + (item.label || 'Ekran') + '</div>' +
+        '</div>';
+      }).join('') +
+      '</div></div>';
+  }
+
+  var finalHtml =
+    '<div class="results-actions">' +
+      '<button class="results-action-btn primary" onclick="window.print()">⬇ PDF indir</button>' +
+      '<button class="new-test-btn" onclick="resetTest()">← Yeni test yap</button>' +
+    '</div>' +
+    screensHtml +
+    '<div class="results-wrap">' + summaryHtml + accHtml + '</div>';
+
   document.getElementById('resultContainer').innerHTML=finalHtml;
   if(results.length===1)toggleAcc(0);
 
@@ -1320,7 +1402,13 @@ async function runTest(){
 
 function resetTest(){
   document.getElementById('resultContainer').innerHTML='';
-  window.scrollTo(0,0);
+  document.getElementById('testSection').style.display='none';
+  singleSelected=null;
+  multiSelected=[];
+  flowItems=[];
+  renderFlowList();
+  renderPersonas();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* History */
