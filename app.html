@@ -930,33 +930,63 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
     <!-- KİMLİK -->
     <div id="pt-kimlik">
       <div class="profile-section">
+        <div class="profile-section-label">Temel bilgiler</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">İsim</div>
+            <input type="text" id="pd-edit-isim" style="width:100%;" placeholder="İsim">
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Meslek</div>
+            <input type="text" id="pd-edit-rol" style="width:100%;" placeholder="Meslek">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Yaş</div>
+            <input type="text" id="pd-edit-yas" style="width:100%;" placeholder="Yaş">
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Şehir</div>
+            <input type="text" id="pd-edit-sehir" style="width:100%;" placeholder="Şehir">
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Teknoloji seviyesi</div>
+          <div style="display:flex;gap:6px;">
+            <button class="pd-tech-btn chip" onclick="pdTechSelect(this,'Çok düşük')">😰 Çok düşük</button>
+            <button class="pd-tech-btn chip" onclick="pdTechSelect(this,'Orta')">🙂 Orta</button>
+            <button class="pd-tech-btn chip" onclick="pdTechSelect(this,'İyi')">😎 İyi</button>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
         <div class="profile-section-label">Motivasyon</div>
-        <div class="profile-info-card" id="pd-motivation">—</div>
+        <textarea id="pd-edit-motiv" class="profile-notes-area" style="min-height:60px;" placeholder="Bu kullanıcıyı ne motive ediyor?"></textarea>
       </div>
       <div class="profile-section">
         <div class="profile-section-label">Acı noktaları</div>
-        <div class="profile-info-card" id="pd-pain">—</div>
+        <textarea id="pd-edit-pain" class="profile-notes-area" style="min-height:60px;" placeholder="Ne tür zorluklarla karşılaşıyor?"></textarea>
       </div>
       <div class="profile-section">
         <div class="profile-section-label">Hedef</div>
-        <div class="profile-info-card" id="pd-goal">—</div>
+        <textarea id="pd-edit-goal" class="profile-notes-area" style="min-height:60px;" placeholder="Temel hedefi ne?"></textarea>
       </div>
-      <div class="profile-section">
-        <div class="profile-section-label">Teknoloji seviyesi</div>
-        <div class="profile-info-card" id="pd-tech">—</div>
-      </div>
+      <button class="profile-save-btn" onclick="saveKimlikEdits()">Değişiklikleri Kaydet</button>
+      <div class="profile-save-note" id="pd-kimlik-saved">✓ Kaydedildi</div>
     </div>
 
-    <!-- NOTLAR -->
+    <!-- NOTLAR — Mini Claude Chat -->
     <div id="pt-notlar" style="display:none;">
-      <div class="profile-section">
-        <div class="profile-section-label">Serbest notlar
-          <span style="font-size:10px;color:var(--ink-ghost);font-weight:400;text-transform:none;">otomatik kaydedilir</span>
-        </div>
-        <textarea class="profile-notes-area" id="pd-notes"
-          placeholder="Bu persona hakkında bildiklerini buraya yaz.&#10;&#10;Örn:&#10;— E-ticarette fiyat kırılımlarına çok dikkat ediyor&#10;— Mobilde alışveriş yapıyor, masaüstü hiç kullanmıyor&#10;— Kargo ücreti gördüğünde sepeti terk ediyor&#10;— Güven rozetlerine inanıyor"></textarea>
-        <button class="profile-save-btn" onclick="saveProfileNotes()">Kaydet</button>
-        <div class="profile-save-note" id="pd-save-note">✓ Kaydedildi</div>
+      <div style="background:var(--accent-soft);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:1rem;font-size:13px;color:var(--accent);line-height:1.5;">
+        <strong>Persona hafızası</strong> — Bu personayla ilgili ne biliyorsan buraya yaz. AI anlık olarak personayı besler.
+      </div>
+      <!-- Chat mesajları -->
+      <div id="pd-chat-messages" style="display:flex;flex-direction:column;gap:10px;margin-bottom:1rem;min-height:80px;"></div>
+      <!-- Input -->
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="pd-chat-input" class="profile-notes-area" style="min-height:48px;max-height:120px;flex:1;resize:none;" placeholder="Örn: Mobilde alışveriş yapıyor, masaüstü hiç kullanmıyor..."></textarea>
+        <button onclick="sendProfileChat()" style="padding:10px 16px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;" id="pd-chat-send">Gönder</button>
       </div>
     </div>
 
@@ -1274,42 +1304,41 @@ function renderPersonas() {
   grid.innerHTML = personas.map(function(p) {
     var isSingleActive = currentMode==='single' && singleSelected===p.id;
     var isMultiActive = currentMode==='multi' && multiSelected.indexOf(p.id)>-1;
+    var isActive = isSingleActive || isMultiActive;
     var cls = 'persona-card' + (isSingleActive?' active-single':'') + (isMultiActive?' active-multi':'');
-    var selectLabel = currentMode==='single'
-      ? (isSingleActive ? '✓ Seçili' : 'Seç')
-      : (isMultiActive ? '✓ Seçili' : 'Seç');
-    var selectStyle = (isSingleActive||isMultiActive)
-      ? 'background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3);'
-      : 'background:var(--surface);color:var(--ink-soft);border-color:var(--border);';
-    return '<div class="'+cls+'" id="pc-'+p.id+'" onclick="openProfileDrawer('+p.id+')" style="cursor:pointer;">' +
-      '<div class="card-actions">' +
-      '<button class="card-action-btn" title="Profil" onclick="openProfileDrawer(event,'+p.id+')">👤</button>' +
-      '</div>' +
-      '<div class="persona-icon" style="background:'+p.iconBg+'">'+p.icon+'</div>' +
-      '<div class="persona-name">'+p.name+'</div>' +
-      '<div class="persona-role">'+p.role+'</div>' +
-      '<button onclick="selectPersona(event,'+p.id+')" style="margin-top:10px;width:100%;padding:6px;border-radius:8px;border:1.5px solid;font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;transition:all 0.15s;'+selectStyle+'">'+selectLabel+'</button>' +
+    var selectLabel = isActive ? '✓ Seçili' : 'Seç';
+    var selectBg = isActive ? 'var(--accent)' : 'var(--surface)';
+    var selectColor = isActive ? '#fff' : 'var(--ink-soft)';
+    var selectBorder = isActive ? 'var(--accent)' : 'var(--border)';
+    return '<div class="'+cls+'" id="pc-'+p.id+'" data-pid="'+p.id+'">' +
+      '<div class="persona-icon" style="background:'+p.iconBg+';cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.icon+'</div>' +
+      '<div class="persona-name" style="cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.name+'</div>' +
+      '<div class="persona-role" style="cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.role+'</div>' +
+      '<button data-select="'+p.id+'" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;border:1.5px solid '+selectBorder+';background:'+selectBg+';color:'+selectColor+';font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;transition:all 0.15s;">'+selectLabel+'</button>' +
       '</div>';
   }).join('') +
   '<div class="persona-card add-card" onclick="openAdd()"><div style="font-size:22px;">+</div><div style="font-size:12px;font-weight:500;">Yeni persona</div></div>';
+
+  // Attach select button events after render
+  document.querySelectorAll('[data-select]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var id = parseInt(this.getAttribute('data-select'));
+      if (currentMode === 'single') {
+        singleSelected = (singleSelected === id) ? null : id;
+        document.getElementById('testSection').style.display = singleSelected !== null ? 'block' : 'none';
+      } else {
+        var idx = multiSelected.indexOf(id);
+        if (idx > -1) multiSelected.splice(idx,1); else multiSelected.push(id);
+        document.getElementById('testSection').style.display = multiSelected.length > 0 ? 'block' : 'none';
+      }
+      document.getElementById('resultContainer').innerHTML = '';
+      renderPersonas();
+    });
+  });
+
   updateSelectedCount();
 }
-
-function selectPersona(e, id) {
-  e.stopPropagation();
-  if (currentMode === 'single') {
-    singleSelected = (singleSelected === id) ? null : id;
-    document.getElementById('testSection').style.display = singleSelected !== null ? 'block' : 'none';
-  } else {
-    var idx = multiSelected.indexOf(id);
-    if (idx > -1) multiSelected.splice(idx,1); else multiSelected.push(id);
-    document.getElementById('testSection').style.display = multiSelected.length > 0 ? 'block' : 'none';
-  }
-  document.getElementById('resultContainer').innerHTML = '';
-  renderPersonas();
-}
-
-function togglePersona(id) { selectPersona({stopPropagation:function(){}}, id); }
 
 function toggleSelectAll() {
   if (multiSelected.length === personas.length) multiSelected = [];
@@ -1643,14 +1672,14 @@ var randomData = {
 };
 
 var currentProfileId = null;
+var pdCurrentTech = '';
 
 function openProfileDrawer(eOrId, id) {
-  // eOrId can be event (from card-action-btn) or id (from card click)
   var pid = (typeof eOrId === 'number') ? eOrId : id;
-  if (eOrId && eOrId.stopPropagation) eOrId.stopPropagation();
   var p = personas.find(function(x){return x.id===pid;});
   if (!p) return;
   currentProfileId = pid;
+  pdCurrentTech = p.tech || '';
 
   // Fill header
   document.getElementById('pd-emoji').textContent = p.icon;
@@ -1662,22 +1691,28 @@ function openProfileDrawer(eOrId, id) {
   if (p.city) meta.innerHTML += '<span class="profile-tag">'+p.city+'</span>';
   if (p.tech) meta.innerHTML += '<span class="profile-tag">'+p.tech+'</span>';
 
-  // Fill kimlik
-  document.getElementById('pd-motivation').textContent = p.motivation || '—';
-  document.getElementById('pd-pain').textContent = p.pain || '—';
-  document.getElementById('pd-goal').textContent = p.goal || '—';
-  document.getElementById('pd-tech').textContent = p.tech || '—';
+  // Fill editable kimlik fields
+  document.getElementById('pd-edit-isim').value = p.name || '';
+  document.getElementById('pd-edit-rol').value = p.role || '';
+  document.getElementById('pd-edit-yas').value = p.age || '';
+  document.getElementById('pd-edit-sehir').value = p.city || '';
+  document.getElementById('pd-edit-motiv').value = p.motivation || '';
+  document.getElementById('pd-edit-pain').value = p.pain || '';
+  document.getElementById('pd-edit-goal').value = p.goal || '';
+  document.querySelectorAll('.pd-tech-btn').forEach(function(b){
+    b.classList.toggle('active', b.textContent.indexOf(p.tech||'') > -1);
+  });
+  document.getElementById('pd-kimlik-saved').style.display = 'none';
 
-  // Load notes from localStorage
-  var notes = JSON.parse(localStorage.getItem('persona_notes') || '{}');
-  document.getElementById('pd-notes').value = notes[pid] || '';
-  document.getElementById('pd-save-note').style.display = 'none';
+  // Load chat history from localStorage
+  var chatHistory = JSON.parse(localStorage.getItem('persona_chat_'+pid) || '[]');
+  renderProfileChat(chatHistory);
 
-  // Load test history for this persona
+  // Load test history
   renderPersonaHistory(pid);
 
   // Switch to kimlik tab by default
-  switchProfileTab('kimlik', document.querySelector('.profile-tab'));
+  switchProfileTab('kimlik', document.querySelectorAll('.profile-tab')[0]);
 
   document.getElementById('profileOverlay').className = 'profile-drawer-overlay open';
   document.getElementById('profileDrawer').className = 'profile-drawer open';
@@ -1692,21 +1727,117 @@ function closeProfileDrawer() {
 function switchProfileTab(tab, el) {
   document.querySelectorAll('.profile-tab').forEach(function(t){t.classList.remove('active');});
   if (el) el.classList.add('active');
-  else document.querySelectorAll('.profile-tab').forEach(function(t,i){if(['kimlik','notlar','gecmis'][i]===tab)t.classList.add('active');});
   document.getElementById('pt-kimlik').style.display = tab==='kimlik' ? 'block' : 'none';
   document.getElementById('pt-notlar').style.display = tab==='notlar' ? 'block' : 'none';
   document.getElementById('pt-gecmis').style.display = tab==='gecmis' ? 'block' : 'none';
 }
 
-function saveProfileNotes() {
-  if (currentProfileId === null) return;
-  var notes = JSON.parse(localStorage.getItem('persona_notes') || '{}');
-  notes[currentProfileId] = document.getElementById('pd-notes').value;
-  localStorage.setItem('persona_notes', JSON.stringify(notes));
-  var saveNote = document.getElementById('pd-save-note');
-  saveNote.style.display = 'block';
-  setTimeout(function(){saveNote.style.display='none';}, 2000);
+function pdTechSelect(el, val) {
+  pdCurrentTech = val;
+  document.querySelectorAll('.pd-tech-btn').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
 }
+
+function saveKimlikEdits() {
+  if (currentProfileId === null) return;
+  var p = personas.find(function(x){return x.id===currentProfileId;});
+  if (!p) return;
+  p.name = document.getElementById('pd-edit-isim').value.trim() || p.name;
+  p.role = document.getElementById('pd-edit-rol').value.trim() || p.role;
+  p.age = document.getElementById('pd-edit-yas').value.trim() || p.age;
+  p.city = document.getElementById('pd-edit-sehir').value.trim() || p.city;
+  p.motivation = document.getElementById('pd-edit-motiv').value.trim() || p.motivation;
+  p.pain = document.getElementById('pd-edit-pain').value.trim() || p.pain;
+  p.goal = document.getElementById('pd-edit-goal').value.trim() || p.goal;
+  if (pdCurrentTech) p.tech = pdCurrentTech;
+  p.icon = pickEmoji(p.age, p.role, p.tech);
+  // Update header
+  document.getElementById('pd-emoji').textContent = p.icon;
+  document.getElementById('pd-name').textContent = p.name;
+  document.getElementById('pd-role').textContent = p.role;
+  var meta = document.getElementById('pd-meta');
+  meta.innerHTML = '';
+  if (p.age) meta.innerHTML += '<span class="profile-tag">'+p.age+' yaş</span>';
+  if (p.city) meta.innerHTML += '<span class="profile-tag">'+p.city+'</span>';
+  if (p.tech) meta.innerHTML += '<span class="profile-tag">'+p.tech+'</span>';
+  document.getElementById('pd-kimlik-saved').style.display = 'block';
+  setTimeout(function(){document.getElementById('pd-kimlik-saved').style.display='none';}, 2000);
+  renderPersonas();
+}
+
+// Mini Claude Chat for persona notes
+function renderProfileChat(history) {
+  var el = document.getElementById('pd-chat-messages');
+  if (!history.length) {
+    el.innerHTML = '<div style="font-size:13px;color:var(--ink-ghost);text-align:center;padding:1rem 0;">Henüz not yok. Persona hakkında bir şeyler yaz.</div>';
+    return;
+  }
+  el.innerHTML = history.map(function(msg) {
+    var isUser = msg.role === 'user';
+    return '<div style="display:flex;justify-content:'+(isUser?'flex-end':'flex-start')+';">' +
+      '<div style="max-width:85%;padding:10px 14px;border-radius:'+(isUser?'14px 14px 4px 14px':'14px 14px 14px 4px')+';background:'+(isUser?'var(--accent)':'var(--surface-2)')+';color:'+(isUser?'#fff':'var(--ink)')+';font-size:13px;line-height:1.5;font-weight:300;">' +
+      msg.content + '</div></div>';
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendProfileChat() {
+  if (currentProfileId === null) return;
+  var input = document.getElementById('pd-chat-input');
+  var text = input.value.trim();
+  if (!text) return;
+
+  var KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (localStorage.getItem('mp_api_key') || '');
+  if (!KEY) { alert('API key eksik!'); return; }
+
+  var p = personas.find(function(x){return x.id===currentProfileId;});
+  var history = JSON.parse(localStorage.getItem('persona_chat_'+currentProfileId) || '[]');
+
+  // Add user message
+  history.push({role:'user', content:text});
+  input.value = '';
+  renderProfileChat(history);
+
+  var btn = document.getElementById('pd-chat-send');
+  btn.textContent = '...'; btn.disabled = true;
+
+  var systemPrompt = 'Sen '+p.name+' adlı bir kullanıcı personasının asistanısın. Bu persona hakkında bilgi birikiyorsun.\n\nMevcut persona profili:\n- İsim: '+p.name+'\n- Meslek: '+p.role+'\n- Yaş: '+p.age+', Şehir: '+p.city+'\n- Teknoloji: '+p.tech+'\n- Motivasyon: '+p.motivation+'\n- Acı noktaları: '+p.pain+'\n- Hedef: '+p.goal+'\n\nKullanıcı persona hakkında bilgi yazıyor. Kısa, sade Türkçe yanıt ver. Yeni bilgiyi persona profiline eklememizi önermek istiyorsan şöyle bitir:\n[GÜNCELLE: persona.motivation = "yeni değer"] veya [GÜNCELLE: persona.pain = "yeni değer"] gibi.';
+
+  try {
+    var messages = [{role:'user', content:systemPrompt+'\n\nKullanıcı notu: '+text}];
+    var res = await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:messages})});
+    var data = await res.json();
+    if (!data.content) throw new Error('Boş yanıt');
+    var reply = data.content.map(function(b){return b.text||'';}).join('').trim();
+
+    // Parse update command if present
+    var updateMatch = reply.match(/\[GÜNCELLE:\s*persona\.(\w+)\s*=\s*"([^"]+)"\]/);
+    if (updateMatch) {
+      var field = updateMatch[1];
+      var val = updateMatch[2];
+      var fieldMap = {motivation:'motivation', pain:'pain', goal:'goal', tech:'tech'};
+      if (fieldMap[field]) {
+        p[fieldMap[field]] = val;
+        // Refresh editable fields
+        if (field==='motivation') document.getElementById('pd-edit-motiv').value = val;
+        if (field==='pain') document.getElementById('pd-edit-pain').value = val;
+        if (field==='goal') document.getElementById('pd-edit-goal').value = val;
+        renderPersonas();
+      }
+      reply = reply.replace(/\[GÜNCELLE:[^\]]+\]/g, '').trim();
+    }
+
+    history.push({role:'assistant', content:reply});
+  } catch(err) {
+    history.push({role:'assistant', content:'Bir hata oluştu: '+err.message});
+  }
+
+  localStorage.setItem('persona_chat_'+currentProfileId, JSON.stringify(history.slice(-20)));
+  renderProfileChat(history);
+  btn.textContent = 'Gönder'; btn.disabled = false;
+}
+
+function saveProfileNotes() { saveKimlikEdits(); }
 
 function renderPersonaHistory(pid) {
   var h = JSON.parse(localStorage.getItem('ux_test_history') || '[]');
@@ -1720,18 +1851,16 @@ function renderPersonaHistory(pid) {
     el.innerHTML = '<div class="profile-empty">'+p.name+' henüz hiç test edilmedi.<br>Test yaptıkça burada birikir.</div>';
     return;
   }
-  el.innerHTML = relevant.map(function(item, i) {
-    return '<div class="profile-history-item" onclick="loadHistoryItemForProfile('+h.indexOf(item)+')">' +
+  el.innerHTML = relevant.map(function(item) {
+    var idx = h.indexOf(item);
+    return '<div class="profile-history-item" onclick="loadHistoryItemForProfile('+idx+')">' +
       '<div class="profile-history-date">'+item.date+'</div>' +
       '<div class="profile-history-scenario">'+(item.scenario||'Test').substring(0,60)+'</div>' +
       '</div>';
   }).join('');
 }
 
-function loadHistoryItemForProfile(idx) {
-  closeProfileDrawer();
-  loadHistoryItem(idx);
-}
+function loadHistoryItemForProfile(idx) { closeProfileDrawer(); loadHistoryItem(idx); }
 
 function testThisPersona() {
   if (currentProfileId === null) return;
@@ -1756,7 +1885,7 @@ function editThisPersona() {
 function deleteThisPersona() {
   if (currentProfileId === null) return;
   var p = personas.find(function(x){return x.id===currentProfileId;});
-  if (!confirm((p?p.name:'Persona')+' silinsin mi?')) return;
+  if (!confirm((p?p.name:'Persona')+' silinsin mi? Bu işlem geri alınamaz.')) return;
   var idx = personas.findIndex(function(x){return x.id===currentProfileId;});
   if (idx > -1) personas.splice(idx, 1);
   if (singleSelected === currentProfileId) singleSelected = null;
