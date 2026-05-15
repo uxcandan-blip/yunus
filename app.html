@@ -1252,15 +1252,22 @@ async function goStep(step, noGen) {
   document.getElementById('modalSub').textContent = subtitles[step-1];
   if (step===1) document.getElementById('modalTitle').textContent = editingId !== null ? 'Persona Düzenle' : 'Yeni Persona Oluştur';
 
-  // Adım 3'e her geçişte YENİDEN oluştur (değişiklikler yansısın)
+  // Adım 3'e her geçişte YENİDEN oluştur
   if (step===3 && !noGen) {
     var isim = document.getElementById('m_isim').value.trim();
     if (!isim) { alert('Lütfen en az isim ve meslek girin.'); goStep(1); return; }
     document.getElementById('step3Preview').style.display='none';
     document.getElementById('modalGenerating').style.display='block';
+    // Önceki motivasyon/pain/hedef alanlarını temizle ki AI yeniden doldursun
+    document.getElementById('m_motivasyon').value='';
+    document.getElementById('m_pain').value='';
+    document.getElementById('m_hedef').value='';
     var KEY = API_KEY !== "YOUR_API_KEY_HERE" ? API_KEY : (localStorage.getItem('mp_api_key') || '');
-    if (KEY) await generateFromChips(KEY);
-    document.getElementById('modalGenerating').style.display='none';
+    if (KEY) {
+      await generateFromChips(KEY);
+    } else {
+      document.getElementById('modalGenerating').style.display='none';
+    }
     showStep3Preview();
   }
 }
@@ -1354,7 +1361,8 @@ async function generateFromChips(ACTIVE_KEY){
     if(json.isim && !isimVal) document.getElementById('m_isim').value=json.isim;
     if(json.rol && !rolVal) document.getElementById('m_rol').value=json.rol;
     if(json.yas) document.getElementById('m_yas_val').value=json.yas;
-    if(json.sehir) document.getElementById('m_sehir').value=json.sehir;
+    if(json.sehir && !document.getElementById('m_sehir').value) document.getElementById('m_sehir').value=json.sehir;
+    // Motivasyon/pain/hedef: her zaman doldur (önceden temizlendi)
     if(json.motivasyon) document.getElementById('m_motivasyon').value=json.motivasyon;
     if(json.pain) document.getElementById('m_pain').value=json.pain;
     if(json.hedef) document.getElementById('m_hedef').value=json.hedef;
