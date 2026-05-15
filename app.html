@@ -1340,15 +1340,28 @@ async function regenFromChips(){
 }
 
 async function generateFromChips(ACTIVE_KEY){
+  var isimVal = document.getElementById('m_isim').value.trim();
+  var rolVal = document.getElementById('m_rol').value.trim();
   var extra=document.getElementById('m_extra').value.trim();
-  var prompt='Bir UX test aracı için kısa bir kullanıcı personası oluştur.\n\nBilgiler:\n'+(mSel.tip?'- Kullanıcı tipi: '+mSel.tip+'\n':'')+(mSel.tech?'- Teknoloji seviyesi: '+mSel.tech+'\n':'')+(mSel.yas?'- Yaş aralığı: '+mSel.yas+'\n':'')+(mSel.motiv?'- Motivasyon eğilimi: '+mSel.motiv+'\n':'')+(extra?'- Ek bilgi: '+extra+'\n':'')+'\nSadece JSON formatında yanıt ver:\n{"isim":"...","sehir":"...","yas":XX,"rol":"...","motivasyon":"...","pain":"...","hedef":"..."}';
+  var prompt='Bir UX test aracı için kısa bir kullanıcı personası oluştur.\n\nBilgiler:\n'+(isimVal?'- İsim: '+isimVal+'\n':'')+(rolVal?'- Meslek: '+rolVal+'\n':'')+(mSel.tip?'- Kullanıcı tipi: '+mSel.tip+'\n':'')+(mSel.tech?'- Teknoloji seviyesi: '+mSel.tech+'\n':'')+(mSel.yas?'- Yaş aralığı: '+mSel.yas+'\n':'')+(mSel.motiv?'- Motivasyon eğilimi: '+mSel.motiv+'\n':'')+(extra?'- Ek bilgi: '+extra+'\n':'')+'\nSadece JSON formatında yanıt ver, başka hiçbir şey yazma:\n{"isim":"...","sehir":"...","yas":XX,"rol":"...","motivasyon":"...","pain":"...","hedef":"..."}';
   try{
-    var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:300,messages:[{role:"user",content:prompt}]})});
+    var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:400,messages:[{role:"user",content:prompt}]})});
     var data=await res.json();
+    if(data.error) throw new Error(data.error.message || 'API hatası');
+    if(!data.content || !data.content[0]) throw new Error('Boş yanıt geldi');
     var text=data.content.map(function(b){return b.text||"";}).join("").trim();
     var json=JSON.parse(text.replace(/```json|```/g,"").trim());
-    document.getElementById('m_isim').value=json.isim||'';document.getElementById('m_rol').value=json.rol||'';document.getElementById('m_yas_val').value=json.yas||'';document.getElementById('m_sehir').value=json.sehir||'';document.getElementById('m_motivasyon').value=json.motivasyon||'';document.getElementById('m_pain').value=json.pain||'';document.getElementById('m_hedef').value=json.hedef||'';
-  }catch(err){alert('Oluşturulamadı: '+err.message);}
+    if(json.isim && !isimVal) document.getElementById('m_isim').value=json.isim;
+    if(json.rol && !rolVal) document.getElementById('m_rol').value=json.rol;
+    if(json.yas) document.getElementById('m_yas_val').value=json.yas;
+    if(json.sehir) document.getElementById('m_sehir').value=json.sehir;
+    if(json.motivasyon) document.getElementById('m_motivasyon').value=json.motivasyon;
+    if(json.pain) document.getElementById('m_pain').value=json.pain;
+    if(json.hedef) document.getElementById('m_hedef').value=json.hedef;
+  }catch(err){
+    console.error('generateFromChips hata:', err);
+    // Hata olsa bile devam et, kullanıcı manuel doldurabilir
+  }
   document.getElementById('modalGenerating').style.display='none';
 }
 
@@ -1514,11 +1527,12 @@ function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repea
 function toggleAcc(id){var body=document.getElementById('acc-body-'+id),toggle=document.getElementById('acc-toggle-'+id);if(body.classList.contains('open')){body.classList.remove('open');toggle.classList.remove('open');}else{body.classList.add('open');toggle.classList.add('open');}}
 
 async function callAPI(persona,scenario,flowDesc){
-  var textPrompt='Sen deneyimli bir UX araştırmacısısın.\n\nPLATFORM BAĞLAMI: Bu görseller Türkiye\'de faaliyet gösteren bir emlak ve vasıta ilan platformuna ait ekranlardır. Platform sahibinden.com\'a rakip olmayı hedeflemekte olup bireysel kullanıcıların ve profesyonel emlakçı/galericilerin ilan verdiği, alıcıların ise ilan arayıp satıcılarla iletişime geçtiği bir yapıya sahiptir.\n\nGÖREVİN: Önce görseldeki ekranı/ekranları analiz et — ne tür bir sayfa olduğunu, hangi UI elementlerin bulunduğunu, kullanıcının bu ekranda ne yapması gerektiğini anla. Ardından aşağıdaki persona kimliğine bürünerek birinci şahıs ağzından gerçekçi bir kullanıcı testi yorumu yaz.\n\nPERSONA:\n- Ad: '+persona.name+'\n- Rol: '+persona.role+(persona.city?'\n- Şehir: '+persona.city:'')+'\n- Yaş: '+persona.age+'\n- Teknoloji seviyesi: '+persona.tech+'\n- Motivasyon: '+persona.motivation+'\n- Acı noktaları: '+persona.pain+'\n- Hedef: '+persona.goal+'\n\nTEST SENARYOSU:\n'+scenario+flowDesc+'\n\nYORUM FORMATI — birinci şahıs, doğal ve gerçekçi:\n1. Bu ekranın ne olduğuna dair ilk izlenim\n2. Beğendiğin 2 şey (spesifik UI elementlerine referans ver)\n3. Sorun yaşadığın 2-3 şey (spesifik)\n'+(flowItems.length>1?'4. Akışta en çok zorlandığın adım\n':'')+  (flowItems.length>1?'5.':'4.')+' Değiştirilmesini istediğin 1 şey\n'+(flowItems.length>1?'6.':'5.')+' 10 üzerinden puan\n\nSonra tek satırda:\nRATINGS:{"genel":X,"kullanım_kolaylığı":X,"güven":X,"hız":X}\nX=1-5 tam sayı.';
+  var textPrompt='Sen deneyimli bir UX araştırmacısısın.\n\nGÖREVİN: Önce görseldeki ekranı/ekranları analiz et — ne tür bir sayfa olduğunu, hangi UI elementlerin bulunduğunu, kullanıcının bu ekranda ne yapması gerektiğini anla. Ardından aşağıdaki persona kimliğine bürünerek birinci şahıs ağzından gerçekçi bir kullanıcı testi yorumu yaz.\n\nPERSONA:\n- Ad: '+persona.name+'\n- Rol: '+persona.role+(persona.city?'\n- Şehir: '+persona.city:'')+'\n- Yaş: '+persona.age+'\n- Teknoloji seviyesi: '+persona.tech+'\n- Motivasyon: '+persona.motivation+'\n- Acı noktaları: '+persona.pain+'\n- Hedef: '+persona.goal+'\n\nTEST SENARYOSU:\n'+scenario+flowDesc+'\n\nYORUM FORMATI — birinci şahıs, doğal ve gerçekçi:\n1. Bu ekranın ne olduğuna dair ilk izlenim\n2. Beğendiğin 2 şey (spesifik UI elementlerine referans ver)\n3. Sorun yaşadığın 2-3 şey (spesifik)\n'+(flowItems.length>1?'4. Akışta en çok zorlandığın adım\n':'')+  (flowItems.length>1?'5.':'4.')+' Değiştirilmesini istediğin 1 şey\n'+(flowItems.length>1?'6.':'5.')+' 10 üzerinden puan\n\nSonra tek satırda:\nRATINGS:{"genel":X,"kullanım_kolaylığı":X,"güven":X,"hız":X}\nX=1-5 tam sayı.';
   var userContent=flowItems.map(function(item){return {type:"image",source:{type:"base64",media_type:item.type,data:item.base64}};}).concat([{type:"text",text:textPrompt}]);
   var res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":ACTIVE_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1200,messages:[{role:"user",content:userContent}]})});
   var data=await res.json();
-  if(data.error)throw new Error(data.error.message);
+  if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  if(!data.content || !Array.isArray(data.content)) throw new Error('API yanıtı beklenmeyen formatta: ' + JSON.stringify(data).substring(0,200));
   return data.content.map(function(b){return b.text||"";}).join("");
 }
 
