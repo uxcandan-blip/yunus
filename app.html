@@ -925,20 +925,32 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
     <div id="modalStep1">
       <div class="modal-field">
         <span class="modal-label">İsim *</span>
-        <input type="text" id="m_isim" placeholder="Örn: Ayşe Kaya">
+        <div style="position:relative;">
+          <input type="text" id="m_isim" placeholder="Örn: Ayşe Kaya" style="padding-right:40px;">
+          <button onclick="rollRandom('isim')" title="Rastgele" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;color:var(--ink-ghost);transition:all 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-ghost)'">🎲</button>
+        </div>
       </div>
       <div class="modal-field">
         <span class="modal-label">Meslek / Rol *</span>
-        <input type="text" id="m_rol" placeholder="Örn: Ürün yöneticisi, öğrenci, ev hanımı...">
+        <div style="position:relative;">
+          <input type="text" id="m_rol" placeholder="Örn: Ürün yöneticisi, öğrenci, ev hanımı..." style="padding-right:40px;">
+          <button onclick="rollRandom('rol')" title="Rastgele" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;color:var(--ink-ghost);transition:all 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-ghost)'">🎲</button>
+        </div>
       </div>
       <div class="modal-field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
           <span class="modal-label">Yaş</span>
-          <input type="text" id="m_yas_val" placeholder="Örn: 34">
+          <div style="position:relative;">
+            <input type="text" id="m_yas_val" placeholder="Örn: 34" style="padding-right:40px;">
+            <button onclick="rollRandom('yas')" title="Rastgele" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;color:var(--ink-ghost);transition:all 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-ghost)'">🎲</button>
+          </div>
         </div>
         <div>
           <span class="modal-label">Şehir</span>
-          <input type="text" id="m_sehir" placeholder="Örn: İstanbul">
+          <div style="position:relative;">
+            <input type="text" id="m_sehir" placeholder="Örn: İstanbul" style="padding-right:40px;">
+            <button onclick="rollRandom('sehir')" title="Rastgele" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:2px 4px;line-height:1;color:var(--ink-ghost);transition:all 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink-ghost)'">🎲</button>
+          </div>
         </div>
       </div>
       <div class="modal-field">
@@ -1010,21 +1022,19 @@ input[type="text"]::placeholder { color: var(--ink-ghost); }
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:0.5rem;">
-          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;">
-            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Motivasyon</div>
-            <div style="font-size:13px;color:var(--ink);line-height:1.5;" id="previewMotiv">—</div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Motivasyon</div>
+            <textarea id="m_motivasyon" style="min-height:60px;" placeholder="Bu kullanıcıyı ne motive ediyor?"></textarea>
           </div>
-          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;">
-            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Acı noktaları</div>
-            <div style="font-size:13px;color:var(--ink);line-height:1.5;" id="previewPain">—</div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Acı noktaları</div>
+            <textarea id="m_pain" style="min-height:60px;" placeholder="Ne tür zorluklarla karşılaşıyor?"></textarea>
           </div>
-          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;">
-            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;">Hedef</div>
-            <div style="font-size:13px;color:var(--ink);line-height:1.5;" id="previewGoal">—</div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--ink-ghost);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Hedef</div>
+            <textarea id="m_hedef" style="min-height:60px;" placeholder="Bu kullanıcının temel hedefi ne?"></textarea>
           </div>
         </div>
-        <!-- Gizli alanlar -->
-        <input type="hidden" id="m_motivasyon"><input type="hidden" id="m_pain"><input type="hidden" id="m_hedef">
       </div>
       <div class="modal-actions">
         <button class="modal-cancel" onclick="goStep(2)">← Geri</button>
@@ -1117,10 +1127,10 @@ let nextId = 10;
 const mSel = { tip:null, tech:null, yas:null, motiv:null };
 
 const personas = [
-  { id:0, icon:"👨‍💼", name:"Mehmet Aydın", role:"Emlak ofisi sahibi", age:48, city:"İstanbul", tech:"Orta", motivation:"Sahibinden'e bağımlılıktan kurtulmak", pain:"Yüksek ilan maliyeti, toplu ilan yönetimi zorluğu", goal:"Çok sayıda ilan yönetmek, müşteriye hızlı ulaşmak", iconBg:"#E6F1FB", badge:"Profesyonel" },
-  { id:1, icon:"🧔", name:"Serkan Kaya", role:"Araç galerisi sahibi", age:39, city:"Ankara", tech:"Orta", motivation:"Daha fazla alıcıya ulaşmak", pain:"İlan güncelleme yükü, rakip görünürlüğü", goal:"Stok listelemek, araç detay sayfasını iyi göstermek", iconBg:"#EAF3DE", badge:"Profesyonel" },
-  { id:2, icon:"👩", name:"Ayşe Demir", role:"Bireysel emlak ilanı veren", age:34, city:"İzmir", tech:"Temel", motivation:"Evini aracısız satmak", pain:"İlan oluşturma karmaşıklığı, güven sorunları", goal:"Hızlı, kolay ilan vermek", iconBg:"#FAEEDA", badge:"Bireysel" },
-  { id:3, icon:"👨", name:"Burak Şahin", role:"Bireysel vasıta ilanı veren", age:27, city:"Bursa", tech:"İyi", motivation:"Aracını hızlı satmak", pain:"Sahte alıcılar, değer tespiti zorluğu", goal:"Hızlı ilan vermek, fiyat karşılaştırmak", iconBg:"#FAEEDA", badge:"Bireysel" },
+  { id:0, icon:"🧔", name:"Ahmet Usta", role:"Esnaf — bakkal sahibi", age:47, city:"Ankara", tech:"Çok düşük", motivation:"İşini büyütmek, yeni müşteri bulmak", pain:"Teknolojiyle arası iyi değil, zaman bulamıyor", goal:"Az adımla sonuç almak, telefonu ile halletmek", iconBg:"#EAF3DE", badge:"Bireysel" },
+  { id:1, icon:"👩", name:"Fatma Hanım", role:"Ev hanımı", age:42, city:"İstanbul", tech:"Orta", motivation:"Aileye en iyi ürünü en uygun fiyata almak", pain:"Güvenilir site bulmak zor, sahte ilanlardan korkuyor", goal:"Hızlı karşılaştırma yapıp güvenle alışveriş etmek", iconBg:"#FAEEDA", badge:"Son kullanıcı" },
+  { id:2, icon:"🧑‍🎓", name:"Burak Şahin", role:"Üniversite öğrencisi", age:21, city:"İzmir", tech:"İyi", motivation:"Ucuz ikinci el eşya bulmak", pain:"Bütçesi kısıtlı, dolandırılmaktan korkuyor", goal:"Hızlıca uygun fiyatlı ürün bulmak", iconBg:"#E6F1FB", badge:"Son kullanıcı" },
+  { id:3, icon:"👨‍💼", name:"Mehmet Aydın", role:"Emlak ofisi sahibi", age:48, city:"İstanbul", tech:"Orta", motivation:"Sahibinden'e bağımlılıktan kurtulmak", pain:"Yüksek ilan maliyeti, toplu ilan yönetimi zorluğu", goal:"Çok sayıda ilan yönetmek, müşteriye hızlı ulaşmak", iconBg:"#E6F1FB", badge:"Profesyonel" },
   { id:4, icon:"👩‍💻", name:"Fatma Yılmaz", role:"Sadece ilan arayan", age:31, city:"İstanbul", tech:"İyi", motivation:"Doğru fiyata uygun ev/araç bulmak", pain:"Sahte ilanlar, eski ilanlar", goal:"Hızlı filtrelemek, güvenilir ilan görmek", iconBg:"#F1EFE8", badge:"Son kullanıcı" },
   { id:5, icon:"👴", name:"Naim Çelik", role:"Her işe bakan serbest emlakçı", age:56, city:"Konya", tech:"Çok düşük", motivation:"İlanı bir yere koyup kurtulmak", pain:"Bilgisayarda kaybolup gidiyor, yanlış kategoriye ilan açıyor", goal:"Az adımla ilanı yayınlamak ve telefon almak", iconBg:"#F1EFE8", badge:"Bireysel" }
 ];
@@ -1268,9 +1278,7 @@ function showStep3Preview() {
   document.getElementById('previewName').textContent=isim||'—';
   document.getElementById('previewRole').textContent=rol||'—';
   document.getElementById('previewMeta').textContent=[yas?yas+' yaş':'',sehir,mSel.tech].filter(Boolean).join(' · ');
-  document.getElementById('previewMotiv').textContent=motiv||'—';
-  document.getElementById('previewPain').textContent=pain||'—';
-  document.getElementById('previewGoal').textContent=hedef||'—';
+  // Textareas zaten dolu (generateFromChips doldurdu), sadece preview kartını güncelle
   document.getElementById('step3Preview').style.display='block';
 }
 
@@ -1477,6 +1485,19 @@ function setInlineKey(val) {
 }
 
 function stars(n){n=Math.max(0,Math.min(5,n));return "★".repeat(n)+"☆".repeat(5-n);}
+
+var randomData = {
+  isim: ['Ayşe Kaya','Mehmet Yılmaz','Fatma Demir','Ali Çelik','Zeynep Arslan','Hasan Öztürk','Elif Şahin','Murat Aydın','Selin Koç','Kemal Yıldız','Deniz Çetin','Büşra Aktaş','Emre Özkan','Hatice Güneş','Serhat Polat','Merve Kurt','Oğuz Doğan','Neslihan Acar','Tarık Erdoğan','Gülşen Yıldırım'],
+  rol: ['Esnaf','Ev hanımı','Üniversite öğrencisi','Emekli memur','Serbest muhasebeci','Öğretmen','Hemşire','Tır şoförü','Market kasiyeri','Mühendis','Avukat','Berber','Fırıncı','Taksi şoförü','Grafik tasarımcı','Satış danışmanı','Çiftçi','Tekniker','Eczacı','Bankacı'],
+  yas: ['19','23','27','31','34','38','42','45','48','52','55','61','67','24','29'],
+  sehir: ['İstanbul','Ankara','İzmir','Bursa','Antalya','Konya','Adana','Gaziantep','Mersin','Diyarbakır','Kayseri','Samsun','Trabzon','Erzurum','Eskişehir']
+};
+
+function rollRandom(field) {
+  var arr = randomData[field];
+  var val = arr[Math.floor(Math.random() * arr.length)];
+  document.getElementById('m_' + (field === 'yas' ? 'yas_val' : field)).value = val;
+}
 
 function pickEmoji(age, role, tech) {
   var a = parseInt(age) || 30;
