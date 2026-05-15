@@ -1306,20 +1306,23 @@ function renderPersonas() {
     var isMultiActive = currentMode==='multi' && multiSelected.indexOf(p.id)>-1;
     var isActive = isSingleActive || isMultiActive;
     var cls = 'persona-card' + (isSingleActive?' active-single':'') + (isMultiActive?' active-multi':'');
-    var selectLabel = isActive ? '✓ Seçili' : 'Seç';
     var selectBg = isActive ? 'var(--accent)' : 'var(--surface)';
     var selectColor = isActive ? '#fff' : 'var(--ink-soft)';
     var selectBorder = isActive ? 'var(--accent)' : 'var(--border)';
-    return '<div class="'+cls+'" id="pc-'+p.id+'" data-pid="'+p.id+'">' +
-      '<div class="persona-icon" style="background:'+p.iconBg+';cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.icon+'</div>' +
-      '<div class="persona-name" style="cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.name+'</div>' +
-      '<div class="persona-role" style="cursor:pointer;" onclick="openProfileDrawer('+p.id+')">'+p.role+'</div>' +
-      '<button data-select="'+p.id+'" style="margin-top:10px;width:100%;padding:7px;border-radius:8px;border:1.5px solid '+selectBorder+';background:'+selectBg+';color:'+selectColor+';font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;transition:all 0.15s;">'+selectLabel+'</button>' +
+    var selectLabel = isActive ? '✓ Seçili' : 'Seç';
+    return '<div class="'+cls+'" id="pc-'+p.id+'">' +
+      '<div class="persona-icon" style="background:'+p.iconBg+'">'+p.icon+'</div>' +
+      '<div class="persona-name">'+p.name+'</div>' +
+      '<div class="persona-role">'+p.role+'</div>' +
+      '<div style="display:flex;gap:6px;margin-top:10px;">' +
+        '<button data-select="'+p.id+'" style="flex:1;padding:7px;border-radius:8px;border:1.5px solid '+selectBorder+';background:'+selectBg+';color:'+selectColor+';font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;transition:all 0.15s;">'+selectLabel+'</button>' +
+        '<button data-detail="'+p.id+'" style="padding:7px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--ink-soft);font-size:11px;font-weight:700;cursor:pointer;font-family:\'Plus Jakarta Sans\',sans-serif;transition:all 0.15s;">Detay</button>' +
+      '</div>' +
       '</div>';
   }).join('') +
   '<div class="persona-card add-card" onclick="openAdd()"><div style="font-size:22px;">+</div><div style="font-size:12px;font-weight:500;">Yeni persona</div></div>';
 
-  // Attach select button events after render
+  // Seç butonları
   document.querySelectorAll('[data-select]').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -1334,6 +1337,15 @@ function renderPersonas() {
       }
       document.getElementById('resultContainer').innerHTML = '';
       renderPersonas();
+    });
+  });
+
+  // Detay butonları
+  document.querySelectorAll('[data-detail]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var id = parseInt(this.getAttribute('data-detail'));
+      openProfileDrawer(id);
     });
   });
 
@@ -1677,7 +1689,8 @@ var pdCurrentTech = '';
 function openProfileDrawer(eOrId, id) {
   var pid = (typeof eOrId === 'number') ? eOrId : id;
   var p = personas.find(function(x){return x.id===pid;});
-  if (!p) return;
+  if (!p) { console.error('Persona bulunamadı:', pid); return; }
+  console.log('openProfileDrawer çağrıldı:', p.name);
   currentProfileId = pid;
   pdCurrentTech = p.tech || '';
 
